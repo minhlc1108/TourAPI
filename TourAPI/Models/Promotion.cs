@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace TourAPI.Models
 {
-    [Table("Categories")]
-    public class Category
+    [Table("Promotions")]
+    public class Promotion
     {
         public int Id { get; set; }
-
         [Required]
         [StringLength(255)]
         public string Name { get; set; }
-
-        [StringLength(255)]
-        public string? Detail { get; set; }
-        public int Status { get; set; }
-        public List<Tour> Tours { get; set; } = new List<Tour>();
+        [Range(0, 100)]
+        public int Percentage { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public int Status { get; set; } = 1;
+        public List<TourPromotion> TourPromotions { get; set; } = new List<TourPromotion>();
     }
 }
