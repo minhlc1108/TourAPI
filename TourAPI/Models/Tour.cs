@@ -19,8 +19,12 @@ namespace TourAPI.Models
         public string Detail { get; set; }
 
         [StringLength(255)]
-        public string City { get; set; }
+        public string Departure { get; set; }
 
+        [StringLength(255)]
+        public string Destination { get; set; }
+
+        public int Duration { get; set; }
         public int Status { get; set; }
 
         public int CategoryId { get; set; }
