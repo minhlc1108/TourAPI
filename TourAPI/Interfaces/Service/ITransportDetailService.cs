@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TourAPI.Interfaces
+namespace TourAPI.Interfaces.Service
 {
-    public interface IBookingDetailRepository
+    public interface ITransportDetailService
     {
         
     }

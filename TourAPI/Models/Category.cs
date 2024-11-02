@@ -14,10 +14,10 @@ namespace TourAPI.Models
 
         [Required]
         [StringLength(255)]
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
 
         [StringLength(255)]
-        public string? Detail { get; set; }
+        public string? Detail { get; set; } = String.Empty;
         public int Status { get; set; }
         public List<Tour> Tours { get; set; } = new List<Tour>();
     }

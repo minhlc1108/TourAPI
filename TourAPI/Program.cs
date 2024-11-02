@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TourAPI.Data;
-using TourAPI.Interfaces;
+using TourAPI.Interfaces.Repository;
+using TourAPI.Interfaces.Service;
+using TourAPI.Middleware;
 using TourAPI.Models;
 using TourAPI.Repository;
 using TourAPI.Service;
@@ -88,17 +90,41 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddTransient<ExceptionMiddleware>();
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<ITourRepository, TourRepository>();
+
+builder.Services.AddScoped<ITourImageService, TourImageService>();
 builder.Services.AddScoped<ITourImageRepository, TourImageRepository>();
+
+builder.Services.AddScoped<ITourScheduleService, TourScheduleService>();
 builder.Services.AddScoped<ITourScheduleRepository, TourScheduleRepository>();
+
+builder.Services.AddScoped<ITransportService, TransportService>();
 builder.Services.AddScoped<ITransportRepository, TransportRepository>();
+
+builder.Services.AddScoped<ITransportDetailService, TransportDetailService>();
 builder.Services.AddScoped<ITransportDetailRepository, TransportDetailRepository>();
+
+builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
+
+builder.Services.AddScoped<ITourPromotionService, TourPromotionService>();
 builder.Services.AddScoped<ITourPromotionRepository, TourPromotionRepository>();
+
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
+builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
+builder.Services.AddScoped<IBookingDetailService, BookingDetailService>();
 builder.Services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
@@ -110,8 +136,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseHttpsRedirection();
 
+app.UseCors(x => x
+     .AllowAnyMethod()
+     .AllowAnyHeader()
+     .AllowCredentials()
+      //.WithOrigins("https://localhost:44351))
+      .SetIsOriginAllowed(origin => true));
 app.UseAuthentication();
 app.UseAuthorization();
 

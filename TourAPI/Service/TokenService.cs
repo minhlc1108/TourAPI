@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
-using TourAPI.Interfaces;
+using TourAPI.Interfaces.Service;
 using TourAPI.Models;
 
 namespace TourAPI.Service

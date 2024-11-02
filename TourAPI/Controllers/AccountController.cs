@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TourAPI.Dtos.Account;
-using TourAPI.Interfaces;
+using TourAPI.Interfaces.Service;
 using TourAPI.Models;
 
 namespace TourAPI.Controllers
@@ -42,7 +42,7 @@ namespace TourAPI.Controllers
             if(!result.Succeeded)
                 return Unauthorized("Tài khoản hoặc mật khẩu không chính xác!");
 
-            return Ok(new NewAccountDto{
+            return Ok(new AccountResponseDto{
                 UserName = user.UserName,
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user)
@@ -79,7 +79,7 @@ namespace TourAPI.Controllers
 
                     if (roleResult.Succeeded)
                     {
-                        return Ok(new NewAccountDto
+                        return Ok(new AccountResponseDto
                         {
                             UserName = account.UserName,
                             Email = account.Email,

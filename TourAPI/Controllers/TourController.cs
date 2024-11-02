@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TourAPI.Dtos.Tour;
-using TourAPI.Interfaces;
+using TourAPI.Interfaces.Repository;
 using TourAPI.Mappers;
 
 namespace TourAPI.Controllers

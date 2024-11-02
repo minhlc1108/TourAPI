@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TourAPI.Models;
 
-namespace TourAPI.Interfaces
+namespace TourAPI.Interfaces.Service
 {
     public interface ITokenService 
     {

@@ -11,7 +11,7 @@ namespace TourAPI.Models
     {
         public int PromotionId { get; set; }
         public int TourScheduleId { get; set; }
-        public Promotion Promotion { get; set; }
-        public TourSchedule TourSchedule { get; set; }
+        public Promotion? Promotion { get; set; }
+        public TourSchedule? TourSchedule { get; set; }
     }
 }

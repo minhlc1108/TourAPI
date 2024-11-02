@@ -6,11 +6,11 @@ using TourAPI.Dtos.Category;
 using TourAPI.Helpers;
 using TourAPI.Models;
 
-namespace TourAPI.Interfaces
+namespace TourAPI.Interfaces.Repository
 {
     public interface ICategoryRepository
     {
-        Task<List<Category>> GetAllAsync(QueryObject query);
+        Task<(List<Category>, int totalCount)> GetAllAsync(CategoryQueryObject query);
         Task<Category?> GetByIdAsync(int id);
         Task<Category> CreateAsync(Category categoryModel);
         Task<Category?> UpdateAsync(int id, UpdateCategoryReqDto categoryDto);  

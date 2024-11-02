@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TourAPI.Dtos.Account
 {
-    public class NewAccountDto
+    public class AccountResponseDto
     {
         public string UserName { get; set; }
         public string Email { get; set; }

@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TourAPI.Interfaces.Repository;
+using TourAPI.Interfaces.Service;
 
-namespace TourAPI.Repository
+namespace TourAPI.Service
 {
-    public class BookingRepository : IBookingRepository
+    public class BookingDetailService : IBookingDetailService
     {
         
     }

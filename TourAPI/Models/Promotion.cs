@@ -13,7 +13,7 @@ namespace TourAPI.Models
         public int Id { get; set; }
         [Required]
         [StringLength(255)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [Range(0, 100)]
         public int Percentage { get; set; }
         public DateTime StartDate { get; set; }

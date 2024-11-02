@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using TourAPI.Data;
 using TourAPI.Dtos.Category;
 using TourAPI.Helpers;
-using TourAPI.Interfaces;
+using TourAPI.Interfaces.Repository;
 using TourAPI.Models;
 
 namespace TourAPI.Repository
@@ -39,28 +39,45 @@ namespace TourAPI.Repository
             return category;
         }
 
-        public async Task<List<Category>> GetAllAsync(QueryObject query)
+        public async Task<(List<Category>,int totalCount)> GetAllAsync(CategoryQueryObject query)
         {
             var categories = _context.Categories.Include(c => c.Tours).AsQueryable();
 
-             if (!string.IsNullOrWhiteSpace(query.Key)) {
-                categories = categories.Where(s => s.Name.Contains(query.Key) || s.Detail.Contains(query.Key));
-             }
-
-             if (!string.IsNullOrWhiteSpace(query.SortBy))
+            if (!string.IsNullOrWhiteSpace(query.Name))
             {
-                 if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase)){
-                    categories = query.IsDecsending ? categories.OrderByDescending(c => c.Name) : categories.OrderBy(c => c.Name);
-                 }
-
-                  if (query.SortBy.Equals("Detail", StringComparison.OrdinalIgnoreCase)){
-                    categories = query.IsDecsending ? categories.OrderByDescending(c => c.Detail) : categories.OrderBy(c => c.Detail);
-                 }
+                categories = categories.Where(s => s.Name.Contains(query.Name));
             }
 
-            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            if (!string.IsNullOrWhiteSpace(query.Detail))
+            {
+                categories = categories.Where(s => s.Detail.Contains(query.Detail));
+            }
 
-            return await categories.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Id", StringComparison.OrdinalIgnoreCase))
+                {
+                    categories = query.IsDecsending ? categories.OrderByDescending(c => c.Id) : categories.OrderBy(c => c.Id);
+                }
+
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    categories = query.IsDecsending ? categories.OrderByDescending(c => c.Name) : categories.OrderBy(c => c.Name);
+                }
+
+                if (query.SortBy.Equals("Detail", StringComparison.OrdinalIgnoreCase))
+                {
+                    categories = query.IsDecsending ? categories.OrderByDescending(c => c.Detail) : categories.OrderBy(c => c.Detail);
+                }
+            }
+            categories = categories.Where(c => c.Status == query.Status);
+            int totalCount = await categories.CountAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var pagedCategories =await categories.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+            return (
+                pagedCategories,
+                totalCount
+            );
         }
 
         public async Task<Category?> GetByIdAsync(int id)
@@ -76,8 +93,8 @@ namespace TourAPI.Repository
                 return null;
             }
             category.Name = categoryDto.Name;
-            category.Detail = category.Detail;
-
+            category.Detail = categoryDto.Detail;
+            
             await _context.SaveChangesAsync();
 
             return category;

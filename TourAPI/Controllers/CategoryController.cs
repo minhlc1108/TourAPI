@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using TourAPI.Data;
 using TourAPI.Dtos.Category;
 using TourAPI.Helpers;
-using TourAPI.Interfaces;
+using TourAPI.Interfaces.Service;
 using TourAPI.Mappers;
 
 namespace TourAPI.Controllers
@@ -16,86 +16,72 @@ namespace TourAPI.Controllers
     [Route("api/category")]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRepo;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryRepository categoryRepo)
+        public CategoryController(ICategoryService categoryService)
         {
-            _categoryRepo = categoryRepo;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
+        public async Task<IActionResult> GetAll([FromQuery] CategoryQueryObject query)
         {
-             if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var categories = await _categoryRepo.GetAllAsync(query);
-            var categoriesDto = categories.Select(c => c.ToCategoryDTO()).ToList();
-            return Ok(categoriesDto);
+            var categorieResultDto = await _categoryService.GetAllAsync(query);
+            return Ok(categorieResultDto);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-             if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var category = await _categoryRepo.GetByIdAsync(id);
+            var categoryDto = await _categoryService.GetByIdAsync(id);
 
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return Ok(category.ToCategoryDTO());
+            return Ok(categoryDto);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateCategoryReqDto categoryDto)
         {
-             if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var categoryModel = categoryDto.ToCategoryFromCreateDTO();
-            await _categoryRepo.CreateAsync(categoryModel);
-            return CreatedAtAction(nameof(GetById), new { id = categoryModel.Id }, categoryModel.ToCategoryDTO());
+            var createdCategoryDto = await _categoryService.CreateAsync(categoryDto);
+            return CreatedAtAction(nameof(GetById), new { id = createdCategoryDto.Id }, createdCategoryDto);
         }
 
         [HttpPut]
         [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCategoryReqDto categoryDto)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var categoryModel = await _categoryRepo.UpdateAsync(id, categoryDto);
-            if (categoryModel == null)
-            {
-                return NotFound();
-            }
+            var updatedCategoryDto = await _categoryService.UpdateAsync(id, categoryDto);
 
-            return Ok(categoryModel.ToCategoryDTO());
+            return Ok(updatedCategoryDto);
         }
 
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var categoryModel = await _categoryRepo.DeleteById(id);
-            if (categoryModel == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(categoryModel.ToCategoryDTO());
+            var categoryDto = await _categoryService.DeleteById(id);
+         
+            return Ok(categoryDto);
         }
     }
 }

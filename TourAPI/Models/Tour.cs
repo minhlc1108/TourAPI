@@ -14,21 +14,21 @@ namespace TourAPI.Models
 
         [Required]
         [StringLength(255)]
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
 
-        public string Detail { get; set; }
-
-        [StringLength(255)]
-        public string Departure { get; set; }
+        public string? Detail { get; set; } = String.Empty;
 
         [StringLength(255)]
-        public string Destination { get; set; }
+        public string Departure { get; set; } = String.Empty;
+
+        [StringLength(255)]
+        public string Destination { get; set; } = String.Empty;
 
         public int Duration { get; set; }
         public int Status { get; set; }
 
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; } 
         public List<TourImage> TourImages { get; set; } = new List<TourImage>();
         public List<TourSchedule> TourSchedules { get; set; } = new List<TourSchedule>();
     }

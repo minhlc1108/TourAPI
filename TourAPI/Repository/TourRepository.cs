@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TourAPI.Data;
-using TourAPI.Interfaces;
+using TourAPI.Interfaces.Repository;
 using TourAPI.Models;
 
 namespace TourAPI.Repository

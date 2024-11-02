@@ -11,8 +11,8 @@ namespace TourAPI.Models
     {
         public int TransportId { get; set; }
         public int TourScheduleId { get; set; }
-        public Transport Transport { get; set; }
-        public TourSchedule TourSchedule { get; set; }
+        public Transport? Transport { get; set; }
+        public TourSchedule? TourSchedule { get; set; }
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
         public int Status { get; set; }
