@@ -11,6 +11,8 @@ namespace TourAPI.Dtos.Category
         [Required(ErrorMessage ="Tên danh mục không được để trống")]
         [MaxLength(255, ErrorMessage = "Tên danh mục không được vượt quá 255 ký tự")]
         public string Name { get; set; }
-        public string? Detail { get; set; }
+        
+        [MaxLength(255, ErrorMessage = "Tên danh mục không được vượt quá 255 ký tự")]
+        public string? Detail { get; set; } = string.Empty;
     }
 }

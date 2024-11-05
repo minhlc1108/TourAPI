@@ -14,41 +14,46 @@ namespace TourAPI.Middleware
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-           try
-			{
-				await next(context);
-			}
-			catch (Exception ex)
-			{
-				await HandleException(context, ex);
-			}
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                await HandleException(context, ex);
+            }
         }
 
-        private static Task HandleException(HttpContext context, Exception exception)  {
+        private static Task HandleException(HttpContext context, Exception exception)
+        {
             ErrorResponseDto errorDto = new ErrorResponseDto()
-			{
-				Message = exception.Message,
-			};
+            {
+                Message = exception.Message,
+            };
 
             int statusCode;
 
-            switch (exception) {
-                case NotFoundException: 
-                statusCode = (int)HttpStatusCode.NotFound;
-                break;
-                default: 
-                errorDto.Message = "Có lỗi xảy ra...";
-                statusCode = (int) HttpStatusCode.InternalServerError;
-                break;  
+            switch (exception)
+            {
+                case NotFoundException:
+                    statusCode = (int)HttpStatusCode.NotFound;
+                    break;
+                default:
+                    errorDto.Message = "Có lỗi xảy ra...";
+                    statusCode = (int)HttpStatusCode.InternalServerError;
+                    break;
             }
-             context.Response.StatusCode = statusCode;
-             context.Response.ContentType = "application/json";
+    
+            errorDto.Status = statusCode;
+            context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/json";
 
-             JsonSerializerOptions options = new JsonSerializerOptions() {
+            JsonSerializerOptions options = new JsonSerializerOptions()
+            {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-             };
+            };
 
-             return context.Response.WriteAsync(JsonSerializer.Serialize(errorDto,options));
+            return context.Response.WriteAsync(JsonSerializer.Serialize(errorDto, options));
         }
     }
 }
