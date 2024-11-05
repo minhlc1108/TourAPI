@@ -47,7 +47,7 @@ namespace TourAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateCategoryReqDto categoryDto)
         {
             if (!ModelState.IsValid)
