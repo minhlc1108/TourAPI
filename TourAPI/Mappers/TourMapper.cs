@@ -13,22 +13,29 @@ namespace TourAPI.Mappers
         {
             return new TourDto
             {
-                // Id = tourModel.Id,
-                // Name = tourModel.Name,
-                // Detail = tourModel.Detail,
-                // City = tourModel.City,
-                // Status = tourModel.Status,
-                // CategoryId = tourModel.CategoryId
+                Id = tourModel.Id,
+                Name = tourModel.Name,
+                Detail = tourModel.Detail,
+                Departure = tourModel.Departure,
+                Destination = tourModel.Destination,
+                Duration = tourModel.Duration,
+                Quantity = tourModel.Quantity,
+                Status = tourModel.Status,
+                CategoryId = tourModel.CategoryId,
+                CategoryName = tourModel.Category != null ? tourModel.Category.Name : string.Empty
             };
         }
 
-        public static Tour ToTourFromCreateDTO(this CreateTourDto tourDto) {
+        public static Tour ToTourFromCreateDTO(this CreateTourReqDto tourDto) {
             return new Tour {
-                // Name = tourDto.Name,
-                // Detail = tourDto.Detail,
-                // City = tourDto.City,
-                // Status = 1,
-                // CategoryId = tourDto.CategoryId
+                Name = tourDto.Name,
+                Detail = tourDto.Detail,
+                Departure = tourDto.Departure,
+                Destination = tourDto.Destination,
+                Quantity = tourDto.Quantity,
+                Duration = tourDto.Duration,
+                Status = 1,
+                CategoryId = tourDto.CategoryId
             };
         }   
     }
