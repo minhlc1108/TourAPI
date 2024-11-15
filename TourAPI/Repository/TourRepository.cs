@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TourAPI.Data;
+using TourAPI.Helpers;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Models;
 
@@ -24,6 +25,13 @@ namespace TourAPI.Repository
             return tourModel;
         }
 
+
+        // public async Task<List<Tour>> GetAllAsync(TourQueryObject query)
+        // {
+        //     var queryable = _context.Tours.AsQueryable();
+
+        //     return await queryable.ToListAsync();
+        // }
         public async Task<List<Tour>> GetAllAsync()
         {
             return await _context.Tours.ToListAsync();

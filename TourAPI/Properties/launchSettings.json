@@ -33,6 +33,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "swagger",
+       "sslPort": 44368,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
