@@ -17,7 +17,7 @@ namespace TourAPI.Dtos.Account
         public string PhoneNumber { get; set; }
         
         public string Address { get; set; }
-        public DateOnly BirthDay {get; set;}
+        public DateTime BirthDay {get; set;}
 
 
     }

@@ -9,8 +9,7 @@ namespace TourAPI.Interfaces.Repository
 {
     public interface ITourRepository
     {
-        // Task<List<Tour>> GetAllAsync(TourQueryObject query);
-        Task<List<Tour>> GetAllAsync();
+        Task<(List<Tour>, int totalCount)> GetAllAsync(TourQueryObject query);
 
         Task<Tour?> GetByIdAsync(int id);
         Task<Tour> CreateAsync(Tour tourModel);

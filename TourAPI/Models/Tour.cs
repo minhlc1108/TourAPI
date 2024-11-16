@@ -23,6 +23,7 @@ namespace TourAPI.Models
 
         [StringLength(255)]
         public string Destination { get; set; } = String.Empty;
+        public int Quantity { get; set; }
 
         public int Duration { get; set; }
         public int Status { get; set; }

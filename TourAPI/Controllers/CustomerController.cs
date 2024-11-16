@@ -22,12 +22,14 @@ namespace TourAPI.Controllers
         }
         // private readonly ICategoryRepository _categoryRepo;
 
-        public async Task<IActionResult> GetById([FromRoute] int id) {
-            var custom =  await _customRepo.GetByIdAsync(id);
-            if(custom == null) {
+         [HttpGet("{id}")] // Chỉ định rõ HTTP GET và route với tham số id
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var custom = await _customRepo.GetByIdAsync(id);
+            if (custom == null)
+            {
                 return NotFound("Không tìm thấy tour");
             }
-            PersonalUserResponseDto user = new PersonalUserResponseDto();
             
             return Ok(custom.ToPersonalUserResponseDto());
         }
