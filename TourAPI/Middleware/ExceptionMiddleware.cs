@@ -35,6 +35,9 @@ namespace TourAPI.Middleware
 
             switch (exception)
             {
+                case InvalidOperationException: 
+                statusCode = (int)HttpStatusCode.Conflict;
+                    break;
                 case NotFoundException:
                     statusCode = (int)HttpStatusCode.NotFound;
                     break;

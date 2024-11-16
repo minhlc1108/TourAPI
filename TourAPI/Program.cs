@@ -1,3 +1,4 @@
+using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,9 @@ using TourAPI.Repository;
 using TourAPI.Service;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Load .env file
+DotEnv.Load();
 
 // Add services to the container.
 
@@ -126,6 +130,8 @@ builder.Services.AddScoped<IBookingDetailService, BookingDetailService>();
 builder.Services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<CloudinaryService>();
+
 
 var app = builder.Build();
 
