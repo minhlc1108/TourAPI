@@ -22,7 +22,8 @@ namespace TourAPI.Mappers
                 Quantity = tourModel.Quantity,
                 Status = tourModel.Status,
                 CategoryId = tourModel.CategoryId,
-                CategoryName = tourModel.Category != null ? tourModel.Category.Name : string.Empty
+                CategoryName = tourModel.Category != null ? tourModel.Category.Name : string.Empty,
+                Images = tourModel.TourImages.Select(image => image.ToTourImageDTO()).ToList()
             };
         }
 
@@ -34,8 +35,8 @@ namespace TourAPI.Mappers
                 Destination = tourDto.Destination,
                 Quantity = tourDto.Quantity,
                 Duration = tourDto.Duration,
-                Status = 1,
-                CategoryId = tourDto.CategoryId
+                CategoryId = tourDto.CategoryId,
+                Status = 1
             };
         }   
     }

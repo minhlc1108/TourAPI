@@ -16,41 +16,37 @@ namespace TourAPI.Controllers
     public class TourController : ControllerBase
     {
         private readonly ITourService _tourService;
+        private readonly ICategoryService _categoryService;
 
-        public TourController(ITourService tourService)
+        public TourController(ITourService tourService, ICategoryService categoryService)
         {
             _tourService = tourService;
+            _categoryService = categoryService;
         }
 
-        [HttpGet] 
-        public async Task<IActionResult> GetAll([FromQuery] TourQueryObject query) {
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] TourQueryObject query)
+        {
             return Ok(await _tourService.GetAllAsync(query));
         }
 
-        // [HttpGet]
-        // [Route("{id:int}")]
-        // public async Task<IActionResult> GetById([FromRoute] int id) {
-        //     var tour =  await _tourRepo.GetByIdAsync(id);
-        //     if(tour == null) {
-        //         return NotFound("Không tìm thấy tour");
-        //     }
-        //     return Ok(tour.ToTourDTO());
-        // }
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetById([FromRoute] int id) {
+            var tourDto =  await _tourService.GetByIdAsync(id);
+            return Ok(tourDto);
+        }
 
-        // [HttpPost]
-        // public async Task<IActionResult> Create([FromBody] CreateTourReqDto tourDto){
-        //       if (!ModelState.IsValid)
-        //         return BadRequest(ModelState);
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateTourReqDto tourDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        //       var category = await _categoryRepo.GetByIdAsync(tourDto.CategoryId);
-        //       if(category == null) {
-        //         return BadRequest("Danh mục tour không tồn tại!");
-        //       }
+            var category = await _categoryService.GetByIdAsync(tourDto.CategoryId);
+            var createdTourDto = await _tourService.CreateAsync(tourDto);
+            return CreatedAtAction(nameof(GetById), new { id = createdTourDto.Id }, createdTourDto);
+        }
 
-        //       var tourModel = tourDto.ToTourFromCreateDTO();
-        //       await _tourRepo.CreateAsync(tourModel);
-        //       return CreatedAtAction(nameof(GetById), new {id = tourModel.Id }, tourModel.ToTourDTO());
-        // }
-        
     }
 }

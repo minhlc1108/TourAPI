@@ -18,6 +18,7 @@ namespace TourAPI.Models
         [Required]
         [StringLength(255)]
         public string Address { get; set; } = String.Empty;
+        public DateTime Birthday { get; set; }
         public int Status { get; set; }
 
         public int? RelatedCustomerId { get; set; }
