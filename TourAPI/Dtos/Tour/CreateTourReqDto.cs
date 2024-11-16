@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using TourAPI.Dtos.TourImage;
 
 namespace TourAPI.Dtos.Tour
 {
@@ -24,8 +25,13 @@ namespace TourAPI.Dtos.Tour
         [Required(ErrorMessage = "Số lượng người không được để trống")]
         public int Quantity { get; set; }
 
-         [Required(ErrorMessage = "Thời lượng không được để trống")]
+        [Required(ErrorMessage = "Thời lượng không được để trống")]
         public int Duration { get; set; }
+
+        [Required(ErrorMessage = "Phải chọn danh mục")]
         public int CategoryId { get; set; }
+
+        [Required(ErrorMessage = "Cần ít nhất một ảnh trong tour")]
+        public List<ImageDto> Images { get; set; }
     }
 }
