@@ -110,7 +110,7 @@ namespace TourAPI.Repository
 
         public async Task<Tour?> GetByIdAsync(int id)
         {
-            return await _context.Tours.FirstOrDefaultAsync(t => t.Id == id);
+            return await _context.Tours.Include(t => t.Category).FirstOrDefaultAsync(t => t.Id == id);
         }
     }
 }

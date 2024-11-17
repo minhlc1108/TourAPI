@@ -52,7 +52,7 @@ namespace TourAPI.Service
 
             if (tour == null)
             {
-                throw new NotFoundException("Không tìm thấy danh mục");
+                throw new NotFoundException("Không tìm thấy tour");
             }
             return tour.ToTourDTO();
         }
