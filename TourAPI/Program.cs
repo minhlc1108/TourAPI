@@ -139,7 +139,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TourAPI v1");
+    });
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
@@ -152,9 +155,9 @@ app.UseCors(x => x
      .AllowCredentials()
       //.WithOrigins("https://localhost:44351))
       .SetIsOriginAllowed(origin => true));
+
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
