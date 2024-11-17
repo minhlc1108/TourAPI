@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TourAPI.Dtos.Account;
+using TourAPI.Helpers;
 using TourAPI.Interfaces.Repository;
+using TourAPI.Interfaces.Service;
 using TourAPI.Mappers;
 
 namespace TourAPI.Controllers
@@ -13,25 +15,39 @@ namespace TourAPI.Controllers
     [Route("api/customer")]
     public class CustomerController : ControllerBase
     {
+        // private readonly ICustomerRepository _customRepo;
+        private readonly ICustomerService _customService;
 
-        private readonly ICustomerRepository _customRepo;
-
-         public CustomerController(ICustomerRepository customRepo)
+         public CustomerController(ICustomerService customService)
         {
-            _customRepo = customRepo;
+            _customService = customService;
         }
-        // private readonly ICategoryRepository _categoryRepo;
 
-         [HttpGet("{id}")] // Chỉ định rõ HTTP GET và route với tham số id
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] CustomerQueryObject query)
         {
-            var custom = await _customRepo.GetByIdAsync(id);
-            if (custom == null)
+             if (!ModelState.IsValid)
             {
-                return NotFound("Không tìm thấy tour");
+                return BadRequest(ModelState);
             }
-            
-            return Ok(custom.ToPersonalUserResponseDto());
+            var categorieResultDto = await _customService.GetAllAsync(query);
+             Console.WriteLine("al>>>>>>",categorieResultDto);
+            return Ok(categorieResultDto);
         }
+
+
+        // [HttpGet("{id}")] // Chỉ định rõ HTTP GET và route với tham số id
+        // public async Task<IActionResult> GetById([FromRoute] int id)
+        // {
+        //     var custom = await _customService.GetByIdAsync(id);
+        //     if (custom == null)
+        //     {
+        //         return NotFound("Không tìm thấy Custom");
+        //     }
+            
+        //     return Ok(custom);
+        // }
+
+        
     }
 }

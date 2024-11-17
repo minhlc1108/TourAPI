@@ -19,7 +19,7 @@ namespace TourAPI.Mappers
                 Sex = customer.Sex,
                 Email = customer.Account.Email,
                 PhoneNumber = customer.Account.PhoneNumber,
-                BirthDay = customer.BirhtDay,
+                Birthday = customer.Birthday,
                 Address= customer.Address,
 
 
