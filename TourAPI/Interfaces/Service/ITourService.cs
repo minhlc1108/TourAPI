@@ -14,5 +14,6 @@ namespace TourAPI.Interfaces.Service
         Task<TourDto?> GetByIdAsync(int id);
 
         Task<TourDto> CreateAsync(CreateTourReqDto createTourReqDto);
+        Task<TourDto> UpdateAsync(int id, UpdateTourReqDto updateTourReqDto);
     }
 }
