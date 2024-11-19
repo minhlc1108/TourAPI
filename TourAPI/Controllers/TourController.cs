@@ -16,12 +16,10 @@ namespace TourAPI.Controllers
     public class TourController : ControllerBase
     {
         private readonly ITourService _tourService;
-        private readonly ICategoryService _categoryService;
 
-        public TourController(ITourService tourService, ICategoryService categoryService)
+        public TourController(ITourService tourService)
         {
             _tourService = tourService;
-            _categoryService = categoryService;
         }
 
         [HttpGet]
@@ -32,8 +30,9 @@ namespace TourAPI.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id) {
-            var tourDto =  await _tourService.GetByIdAsync(id);
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var tourDto = await _tourService.GetByIdAsync(id);
             return Ok(tourDto);
         }
 
@@ -43,10 +42,19 @@ namespace TourAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var category = await _categoryService.GetByIdAsync(tourDto.CategoryId);
             var createdTourDto = await _tourService.CreateAsync(tourDto);
             return CreatedAtAction(nameof(GetById), new { id = createdTourDto.Id }, createdTourDto);
         }
 
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateTourReqDto tourDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var updatedTourDto = await _tourService.UpdateAsync(id, tourDto);
+            return Ok(updatedTourDto);
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace TourAPI.Dtos.TourImage
 {
     public class ImageDto
     {
-        public string Uid {get; set;}
+        public int? Id { get; set; }
         public string Url { get; set; }
     }
 }
