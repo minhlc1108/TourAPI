@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TourAPI.Data;
 
@@ -11,9 +12,11 @@ using TourAPI.Data;
 namespace TourAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241119081029_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace TourAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5abf4941-d44a-4df2-9ae1-dee5beecf9d8",
+                            Id = "aa6cbfbd-af79-444f-943c-1c92ebb56fb3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "03433060-cc9e-4194-8c0c-1b5f15002376",
+                            Id = "d57f31b4-c6f8-4fa5-9c76-24203ee31dd2",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -337,9 +340,6 @@ namespace TourAPI.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("Birthday")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -429,9 +429,6 @@ namespace TourAPI.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -450,7 +447,10 @@ namespace TourAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("TourId")
+                    b.Property<bool>("IsAvatar")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("TourId")
                         .HasColumnType("int");
 
                     b.Property<string>("Url")
@@ -498,7 +498,7 @@ namespace TourAPI.Migrations
                     b.Property<int>("PriceChild")
                         .HasColumnType("int");
 
-                    b.Property<int>("Remain")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReturnDate")
@@ -695,9 +695,7 @@ namespace TourAPI.Migrations
                 {
                     b.HasOne("TourAPI.Models.Tour", "Tour")
                         .WithMany("TourImages")
-                        .HasForeignKey("TourId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TourId");
 
                     b.Navigation("Tour");
                 });

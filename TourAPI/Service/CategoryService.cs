@@ -15,7 +15,8 @@ namespace TourAPI.Service
     {
         private readonly ICategoryRepository _categoryRepo;
 
-        public CategoryService(ICategoryRepository categoryRepo) {
+        public CategoryService(ICategoryRepository categoryRepo)
+        {
             _categoryRepo = categoryRepo;
         }
         public async Task<CategoryDto> CreateAsync(CreateCategoryReqDto categoryDto)
@@ -48,7 +49,7 @@ namespace TourAPI.Service
 
         public async Task<CategoryDto?> GetByIdAsync(int id)
         {
-             var category = await _categoryRepo.GetByIdAsync(id);
+            var category = await _categoryRepo.GetByIdAsync(id);
 
             if (category == null)
             {
@@ -59,12 +60,14 @@ namespace TourAPI.Service
 
         public async Task<CategoryDto?> UpdateAsync(int id, UpdateCategoryReqDto categoryDto)
         {
-            var categoryModel = await _categoryRepo.UpdateAsync(id, categoryDto);
+            var categoryModel = await _categoryRepo.GetByIdAsync(id);
             if (categoryModel == null)
             {
                 throw new NotFoundException("Không tìm thấy danh mục");
             }
 
+            categoryModel.Name = categoryDto.Name;
+            categoryModel.Detail = categoryDto.Detail;
             return categoryModel.ToCategoryDTO();
         }
     }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TourAPI.Data;
-using TourAPI.Dtos.Category;
 using TourAPI.Helpers;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Models;
@@ -85,19 +84,11 @@ namespace TourAPI.Repository
             return await _context.Categories.Include(c => c.Tours).FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<Category?> UpdateAsync(int id, UpdateCategoryReqDto categoryDto)
+        public async Task<Category?> UpdateAsync(Category categoryModel)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync((c => c.Id == id));
-            if (category == null)
-            {
-                return null;
-            }
-            category.Name = categoryDto.Name;
-            category.Detail = categoryDto.Detail;
-            
+            _context.Categories.Update(categoryModel);
             await _context.SaveChangesAsync();
-
-            return category;
+            return categoryModel;
         }
     }
 }

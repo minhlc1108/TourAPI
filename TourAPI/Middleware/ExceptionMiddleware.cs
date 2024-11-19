@@ -35,8 +35,8 @@ namespace TourAPI.Middleware
 
             switch (exception)
             {
-                case InvalidOperationException: 
-                statusCode = (int)HttpStatusCode.Conflict;
+                case InvalidOperationException:
+                    statusCode = (int)HttpStatusCode.Conflict;
                     break;
                 case NotFoundException:
                     statusCode = (int)HttpStatusCode.NotFound;
@@ -46,7 +46,8 @@ namespace TourAPI.Middleware
                     statusCode = (int)HttpStatusCode.InternalServerError;
                     break;
             }
-    
+
+            errorDto.StackTrace = exception.StackTrace;
             errorDto.Status = statusCode;
             context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";

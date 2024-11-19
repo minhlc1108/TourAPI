@@ -110,7 +110,14 @@ namespace TourAPI.Repository
 
         public async Task<Tour?> GetByIdAsync(int id)
         {
-            return await _context.Tours.FirstOrDefaultAsync(t => t.Id == id);
+            return await _context.Tours.Include(t => t.Category).Include(t => t.TourImages).FirstOrDefaultAsync(t => t.Id == id);
+        }
+
+        public async Task<Tour> UpdateAsync(Tour tourModel)
+        {
+            _context.Tours.Update(tourModel);
+            await _context.SaveChangesAsync();
+            return tourModel;
         }
     }
 }

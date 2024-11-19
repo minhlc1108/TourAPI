@@ -13,7 +13,7 @@ namespace TourAPI.Interfaces.Repository
         Task<(List<Category>, int totalCount)> GetAllAsync(CategoryQueryObject query);
         Task<Category?> GetByIdAsync(int id);
         Task<Category> CreateAsync(Category categoryModel);
-        Task<Category?> UpdateAsync(int id, UpdateCategoryReqDto categoryDto);  
+        Task<Category?> UpdateAsync(Category categoryModel);  
         Task<Category?> DeleteById(int id);
     }
 }
