@@ -36,17 +36,19 @@ namespace TourAPI.Controllers
         }
 
 
-        // [HttpGet("{id}")] // Chỉ định rõ HTTP GET và route với tham số id
-        // public async Task<IActionResult> GetById([FromRoute] int id)
-        // {
-        //     var custom = await _customService.GetByIdAsync(id);
-        //     if (custom == null)
-        //     {
-        //         return NotFound("Không tìm thấy Custom");
-        //     }
+        [HttpGet("{id}")]
+         // Chỉ định rõ HTTP GET và route với tham số id
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var custom = await _customService.GetByIdAsync(id);
+            if (custom == null)
+            {
+                return NotFound("Không tìm thấy Custom");
+            }
             
-        //     return Ok(custom);
-        // }
+            return Ok(custom);
+        }
+       
 
         
     }

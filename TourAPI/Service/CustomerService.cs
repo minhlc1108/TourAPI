@@ -42,9 +42,9 @@ namespace TourAPI.Service
             var (customers, totalCount) = await _customerRepo.GetAllAsync(query);
 
             var customersDto = customers.Select(c => c.ToCustomerDto()).ToList();
-            Console.WriteLine("al>>>>>>",customersDto);
+            // Console.WriteLine("al>>>>>>",customersDto);
             return new CustomerResultDto
-            {
+            { 
                 Customers = customersDto,
                 Total = totalCount
             };
