@@ -13,5 +13,6 @@ namespace TourAPI.Dtos.Category
         public string Detail { get; set; } 
         public int Status { get; set; }
         public List<TourDto> Tours { get; set; } 
+        
     }
 }
