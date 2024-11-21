@@ -22,8 +22,11 @@ namespace TourAPI.Repository
         public async Task<(List<Customer>, int totalCount)> GetAllAsync(CustomerQueryObject query)
         {
             // var customers = _context.Customers.AsQueryable();
-            var customers = _context.Customers.Include(c => c.BookingDetails).AsQueryable();
-
+            // var customers = _context.Customers.Include(c => c.BookingDetails).AsQueryable();
+            var customers = _context.Customers
+                    .Include(c => c.BookingDetails)
+                    .Include(c => c.Account) // Load dữ liệu từ bảng Account
+                    .AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Name))
             {
                 customers = customers.Where(c => c.Name.Contains(query.Name));
@@ -57,9 +60,11 @@ namespace TourAPI.Repository
             );
         }
 
-        public Task<Customer?> GetByIdAsync(int id)
+        public async Task<Customer?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Customers
+                .Include(c => c.Account) // Load Account liên quan để lấy Email và PhoneNumber
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
     }
 }

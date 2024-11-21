@@ -36,7 +36,8 @@ namespace TourAPI.Controllers
         }
 
 
-        [HttpGet("{id}")]
+         [HttpGet]
+        [Route("{id:int}")]
          // Chỉ định rõ HTTP GET và route với tham số id
         public async Task<IActionResult> GetById([FromRoute] int id)
         {

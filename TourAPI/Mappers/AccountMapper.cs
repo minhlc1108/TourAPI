@@ -17,15 +17,17 @@ namespace TourAPI.Mappers
                 Id = customer.Id,
                 Name = customer.Name,
                 Sex = customer.Sex,
-                Email = customer.Account.Email,
-                PhoneNumber = customer.Account.PhoneNumber,
+                Email = customer.Account?.Email ?? "Unknown", // Gán giá trị mặc định nếu Account null
+                PhoneNumber = customer.Account?.PhoneNumber ?? "Unknown",
+                // Email = customer.Account.Email,
+                // PhoneNumber = customer.Account.PhoneNumber,
                 Birthday = customer.Birthday,
-                Address= customer.Address,
+                Address = customer.Address,
 
 
             };
         }
 
-       
+
     }
 }

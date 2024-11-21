@@ -12,9 +12,12 @@ namespace TourAPI.Mappers
         Sex = customer.Sex,
         Address = customer.Address,
         Birthday = customer.Birthday,
-        Email = customer.Account?.Email ?? "Unknown", // Gán giá trị mặc định nếu Account null
-        PhoneNumber = customer.Account?.PhoneNumber ?? "Unknown",
+        Email = customer.Account.Email,
+        PhoneNumber = customer.Account.PhoneNumber,
         Status = customer.Status,
+
+        // Email = customer.Account?.Email ?? "Unknown", // Gán giá trị mặc định nếu Account null
+        // PhoneNumber = customer.Account?.PhoneNumber ?? "Unknown",
                 };
          }
     }
