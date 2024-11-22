@@ -14,6 +14,7 @@ namespace TourAPI.Mappers
         Birthday = customer.Birthday,
         Email = customer.Account.Email,
         PhoneNumber = customer.Account.PhoneNumber,
+        Bookings = customer.Bookings.Select(t=> t.ToCustomerDto()).ToList
         Status = customer.Status,
 
         // Email = customer.Account?.Email ?? "Unknown", // Gán giá trị mặc định nếu Account null
