@@ -25,7 +25,8 @@ namespace TourAPI.Repository
             // var customers = _context.Customers.Include(c => c.BookingDetails).AsQueryable();
             var customers = _context.Customers
                     .Include(c => c.BookingDetails)
-                    .Include(c => c.Account) // Load dữ liệu từ bảng Account
+                    .Include(c => c.Bookings)
+                    .Include(c => c.Account) 
                     .AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Name))
             {
@@ -63,8 +64,18 @@ namespace TourAPI.Repository
         public async Task<Customer?> GetByIdAsync(int id)
         {
             return await _context.Customers
-                .Include(c => c.Account) // Load Account liên quan để lấy Email và PhoneNumber
+                .Include(c => c.BookingDetails)
+                .Include(c => c.Bookings)
+                    .ThenInclude(b => b.TourSchedule)
+                .Include(c => c.Account) 
+                // .Include(c => c.Bookings.Select(v => v.TourSchedule)) 
                 .FirstOrDefaultAsync(t => t.Id == id);
+        }
+        public async Task<Customer?> UpdateAsync(Customer customerModel)
+        {
+            _context.Customers.Update(customerModel);
+            await _context.SaveChangesAsync();
+            return customerModel;
         }
     }
 }

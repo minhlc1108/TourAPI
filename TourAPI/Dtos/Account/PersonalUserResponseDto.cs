@@ -19,6 +19,10 @@ namespace TourAPI.Dtos.Account
         public string Address { get; set; }
         public DateTime Birthday {get; set;}
 
+        public string Password {get;set;}
+
+        // public List<BookingDto>? Bookings {get;set;} 
+
 
     }
 }

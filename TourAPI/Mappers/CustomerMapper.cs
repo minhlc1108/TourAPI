@@ -14,12 +14,15 @@ namespace TourAPI.Mappers
         Birthday = customer.Birthday,
         Email = customer.Account.Email,
         PhoneNumber = customer.Account.PhoneNumber,
-        Bookings = customer.Bookings.Select(t=> t.ToCustomerDto()).ToList
+        Password = customer.Account.PasswordHash,
+        Bookings = customer.Bookings.Select(t => t.ToBookingDTO()).ToList(),
         Status = customer.Status,
 
-        // Email = customer.Account?.Email ?? "Unknown", // Gán giá trị mặc định nếu Account null
-        // PhoneNumber = customer.Account?.PhoneNumber ?? "Unknown",
-                };
+            };
          }
     }
 }
+
+
+        // Email = customer.Account?.Email ?? "Unknown", // Gán giá trị mặc định nếu Account null
+        // PhoneNumber = customer.Account?.PhoneNumber ?? "Unknown",

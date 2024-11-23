@@ -23,7 +23,9 @@ namespace TourAPI.Mappers
                 PhoneNumber = customer.Account.PhoneNumber,
                 Birthday = customer.Birthday,
                 Address = customer.Address,
-
+                Password = customer.Account.PasswordHash,
+                // Bookings = customer.Bookings.Select(t => t.ToBookingDTO()).ToList(),
+       
 
             };
         }

@@ -11,5 +11,7 @@ namespace TourAPI.Interfaces.Repository
     {
         Task<(List<Customer>, int totalCount)> GetAllAsync(CustomerQueryObject query);
          Task<Customer?> GetByIdAsync(int id);
+        Task<Customer?> UpdateAsync(Customer customerModel);
+
     }
 }

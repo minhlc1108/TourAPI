@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TourAPI.Dtos.Account;
+using TourAPI.Dtos.Customer;
 using TourAPI.Helpers;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
@@ -30,9 +31,9 @@ namespace TourAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var categorieResultDto = await _customService.GetAllAsync(query);
-             Console.WriteLine("al>>>>>>",categorieResultDto);
-            return Ok(categorieResultDto);
+            var CustomerResultDto = await _customService.GetAllAsync(query);
+            //  Console.WriteLine("al>>>>>>",categorieResultDto);
+            return Ok(CustomerResultDto);
         }
 
 
@@ -49,6 +50,21 @@ namespace TourAPI.Controllers
             
             return Ok(custom);
         }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCustomerReqDto customerDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var updatedCustomerDto = await _customService.UpdateAsync(id, customerDto);
+
+            return Ok(updatedCustomerDto);
+        }
+
+
        
 
         
