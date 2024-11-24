@@ -20,7 +20,8 @@ namespace TourAPI.Mappers
                 Status = booking.Status,
                 Time = booking.Time,
                 TourScheduleId = booking.TourScheduleId,
-                TourSchedule = booking.TourSchedule,
+                TourSchedule = booking.TourSchedule?.ToTourScheduleDto(),
+
                 
                 // Tours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
             };

@@ -67,6 +67,9 @@ namespace TourAPI.Repository
                 .Include(c => c.BookingDetails)
                 .Include(c => c.Bookings)
                     .ThenInclude(b => b.TourSchedule)
+                        .ThenInclude(ts => ts.Tour ) 
+                            .ThenInclude(t => t.TourImages ) 
+
                 .Include(c => c.Account) 
                 // .Include(c => c.Bookings.Select(v => v.TourSchedule)) 
                 .FirstOrDefaultAsync(t => t.Id == id);
