@@ -1,3 +1,4 @@
+using dotenv.net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,3 +32,4 @@ namespace TourAPI.Models
         public List<BookingDetail> BookingDetails {get; set;} = new List<BookingDetail>();
     }
 }
+

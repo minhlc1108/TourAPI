@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TourAPI.Dtos.Customer
+namespace TourAPI.Dtos.Account
 {
-    public class CustomerResultDto
+    public class AccountResultDto
     {
-         public List<CustomerDto> Customers { get; set; }
+         public List<AccountDto> Accounts { get; set; }
          public int Total {get; set;}
     }
 }

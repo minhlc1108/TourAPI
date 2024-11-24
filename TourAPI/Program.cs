@@ -2,9 +2,11 @@ using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TourAPI.Data;
+using TourAPI.Interfaces;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
 using TourAPI.Middleware;
@@ -20,10 +22,9 @@ DotEnv.Load();
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Swagger/OpenAPI configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
@@ -43,34 +44,47 @@ builder.Services.AddSwaggerGen(option =>
             {
                 Reference = new OpenApiReference
                 {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 }
             },
-            new string[]{}
+            new string[] { }
         }
     });
 });
+
+// Configure Email Sender
+builder.Services.AddSingleton<IEmailSender>(new EmailSender(
+    smtpHost: builder.Configuration["EmailSettings:SmtpServer"],
+    smtpPort: int.Parse(builder.Configuration["EmailSettings:SmtpPort"]),
+    smtpUser: builder.Configuration["EmailSettings:Username"],
+    smtpPass: builder.Configuration["EmailSettings:Password"]
+));
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
+// Database context
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<Account, IdentityRole> (options => {
+builder.Services.AddIdentity<Account, IdentityRole>(options =>
+{
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 12;
 })
-.AddEntityFrameworkStores<ApplicationDBContext>();
+.AddEntityFrameworkStores<ApplicationDBContext>()
+.AddDefaultTokenProviders();
 
+
+// Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme =
@@ -94,7 +108,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Register services
 builder.Services.AddTransient<ExceptionMiddleware>();
+
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -132,7 +150,6 @@ builder.Services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddSingleton<CloudinaryService>();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -149,12 +166,13 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
+// Configure CORS
 app.UseCors(x => x
-     .AllowAnyMethod()
-     .AllowAnyHeader()
-     .AllowCredentials()
-      //.WithOrigins("https://localhost:44351))
-      .SetIsOriginAllowed(origin => true));
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    //.WithOrigins("https://yourtrusteddomain.com")  // Restrict to a trusted domain
+    .SetIsOriginAllowed(origin => true));  // Set specific domains in production
 
 app.UseAuthentication();
 app.UseAuthorization();
