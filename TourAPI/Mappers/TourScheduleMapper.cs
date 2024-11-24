@@ -30,5 +30,25 @@ namespace TourAPI.Mappers
                 // Tours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
             };
         }
+
+        public static TourScheduleDto ToTourScheduleFromTourDto(this TourSchedule TourSchedule)
+        {
+            return new TourScheduleDto
+            {
+                Id = TourSchedule.Id,
+                Name  = TourSchedule.Name,
+                DepartureDate = TourSchedule.DepartureDate,
+                ReturnDate = TourSchedule.ReturnDate,
+                Remain = TourSchedule.Remain,
+                PriceAdult = TourSchedule.PriceAdult,
+                PriceChild = TourSchedule.PriceChild,
+                Status = TourSchedule.Status,
+                TourId = TourSchedule.TourId,
+                // Tour = TourSchedule.Tour?.ToTourDTO(),
+
+                
+                // Tours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
+            };
+        }
     }
 }

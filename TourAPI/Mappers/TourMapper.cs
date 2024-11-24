@@ -24,7 +24,7 @@ namespace TourAPI.Mappers
                 CategoryId = tourModel.CategoryId,
                 CategoryName = tourModel.Category != null ? tourModel.Category.Name : string.Empty,
                 Images = tourModel.TourImages.Select(image => image.ToTourImageDTO()).ToList(),
-                TourSchedules = tourModel.TourSchedules.Select(ts => ts.ToTourScheduleDto()).ToList(),
+                TourSchedules = tourModel.TourSchedules.Select(ts => ts.ToTourScheduleFromTourDto()).ToList(),
             };
         }
 
