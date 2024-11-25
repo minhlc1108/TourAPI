@@ -1,30 +1,59 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TourAPI.Dtos.Bookings;
+using TourAPI.Dtos.Booking;
+using TourAPI.Dtos.BookingDetail;
 using TourAPI.Models;
 
 namespace TourAPI.Mappers
 {
     public static class BookingMapper
     {
-         public static BookingDto ToBookingDTO(this Booking booking)
+
+        public static BookingDto ToBookingResultDto(this Booking booking)
         {
+            if (booking == null)
+            {
+                return null;
+            }
+
             return new BookingDto
             {
                 Id = booking.Id,
-                TotalPrice  = booking.TotalPrice,
+                TotalPrice = booking.TotalPrice,
                 AdultCount = booking.AdultCount,
                 ChildCount = booking.ChildCount,
                 Status = booking.Status,
                 Time = booking.Time,
                 TourScheduleId = booking.TourScheduleId,
-                TourSchedule = booking.TourSchedule?.ToTourScheduleDto(),
-
-                
-                // Tours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
+                CustomerId = booking.CustomerId,
+                Customer = booking.Customer,
+                TourSchedule = booking.TourSchedule,
+                BookingDetails = booking.BookingDetails?.Select(bd => bd.ToBookingDetailDto()).ToList()
             };
+        }
+
+
+        public static Booking ToBookingModel(this CreateBookingReqDto bookingDto)
+        {
+            return new Booking
+            {
+                TotalPrice = (int)bookingDto.TotalPrice,
+                AdultCount = bookingDto.AdultCount,
+                ChildCount = bookingDto.ChildCount,
+                Status = bookingDto.Status,
+                Time = bookingDto.Time,
+                TourScheduleId = bookingDto.TourScheduleId,
+                CustomerId = bookingDto.CustomerId
+            };
+        }
+
+        public static void UpdateBookingFromDto(this Booking booking, UpdateBookingReqDto bookingDto)
+        {
+            booking.TotalPrice = (int)bookingDto.TotalPrice;
+            booking.AdultCount = bookingDto.AdultCount;
+            booking.ChildCount = bookingDto.ChildCount;
+            booking.Status = bookingDto.Status;
+            booking.Time = bookingDto.Time;
+            booking.TourScheduleId = bookingDto.TourScheduleId;
+            booking.CustomerId = bookingDto.CustomerId;
         }
     }
 }

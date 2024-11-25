@@ -15,7 +15,7 @@ namespace TourAPI.Mappers
         Email = customer.Account.Email,
         PhoneNumber = customer.Account.PhoneNumber,
         Password = customer.Account.PasswordHash,
-        Bookings = customer.Bookings.Select(t => t.ToBookingDTO()).ToList(),
+        Bookings = customer.Bookings.Select(t => t.ToBookingResultDto()).ToList(),
         Status = customer.Status,
 
             };
