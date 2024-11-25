@@ -6,13 +6,6 @@ using TourAPI.Dtos.Booking;
 using TourAPI.Exceptions;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
-using TourAPI.Mappers;
-using TourAPI.Helpers;
-using Microsoft.EntityFrameworkCore;
-using TourAPI.Data;
-using Microsoft.AspNetCore.Mvc;
-using TourAPI.Models;
-using TourAPI.Dtos.Category;
 
 namespace TourAPI.Service
 {
