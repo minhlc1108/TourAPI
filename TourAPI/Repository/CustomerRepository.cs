@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using TourAPI.Data;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Models;
@@ -26,26 +27,34 @@ namespace TourAPI.Repository
             return await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<Customer?> GetCustomerByAccountIdAsync(string accountId)
+        {
+            return await _context.Customers
+                .FirstOrDefaultAsync(c => c.AccountId == accountId);
+        }
+
         public async Task AddCustomerAsync(Customer customer)
         {
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateCustomerAsync(Customer customer)
+        public async Task<bool> UpdateCustomerAsync(Customer customer)
         {
             _context.Customers.Update(customer);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task DeleteCustomerAsync(int id)
+        public async Task<bool> DeleteCustomerAsync(string id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(u => u.AccountId == id);
             if (customer != null)
             {
                 _context.Customers.Remove(customer);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
+
     }
 }

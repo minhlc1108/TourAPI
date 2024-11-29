@@ -8,8 +8,9 @@ namespace TourAPI.Interfaces.Repository
     {
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
         Task<Customer?> GetCustomerByIdAsync(int id);
+        Task<Customer?> GetCustomerByAccountIdAsync(string accountId);
         Task AddCustomerAsync(Customer customer);
-        Task UpdateCustomerAsync(Customer customer);
-        Task DeleteCustomerAsync(int id);
+        Task<bool> UpdateCustomerAsync(Customer customer);
+        Task<bool> DeleteCustomerAsync(string id);
     }
 }

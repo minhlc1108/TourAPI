@@ -8,9 +8,8 @@ namespace TourAPI.Interfaces.Service
     public interface ICustomerService
     {
         Task<IActionResult> GetCustomers();
-        Task<IEnumerable<Customer>> GetAllCustomersAsync();
-        Task<Customer?> GetCustomerByIdAsync(int id);
-        Task AddCustomerAsync(Customer customer);
-        Task UpdateCustomerAsync(Customer customer);
+        Task<Customer?> GetCustomerByAccountIdAsync(string accountId);
+        Task<bool> UpdateCustomerAsync(string accountId, UpdateCustomerDto updateCustomerDto);
+        Task<bool> DeleteCustomerAsync(string id);
     }
 }

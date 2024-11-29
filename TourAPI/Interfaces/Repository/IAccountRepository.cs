@@ -6,15 +6,17 @@ namespace TourAPI.Interfaces.Repository
 {
     public interface IAccountRepository
     {
-        Task<IdentityUser?> GetAccountByIdAsync(string id);
+        Task<Account?> GetAccountByIdAsync(string id);
         Task<Account?> GetAccountByUsernameAsync(string username);
+        Task<Account> GetAccountByPhoneAsync(string phone);
         Task<bool> IsUserAdminAsync(string id);
         Task<bool> UpdateAccountAsync(Account account);
         Task<bool> UpdateCustomerStatusAsync(string accountId, int status);
+        Task<bool> UpdateAccountWithPasswordAsync(Account account, string password);
+        Task<bool> UpdateUserRolesAsync(Account account, string newRole);
         Task<bool> CreateAccountAsync(Account account, string password);
-        Task<bool> AddCustomerAsync(Customer customer);
+        Task<bool> DeleteAccountAsync(string id);
         Task<IEnumerable<dynamic>> GetAllAccountsAsync(); 
-        Task<bool> AccountExistsAsync(string username, string email, string phone);
         Task<Account?> GetAccountByEmailAsync(string email);
         Task<bool> SetAccountLockoutAsync(string accountId, bool lockoutEnabled); 
     }

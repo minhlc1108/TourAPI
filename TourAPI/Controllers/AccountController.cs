@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourAPI.Dtos.Account;
 using TourAPI.Interfaces.Service;
+using TourAPI.Service;
 
 [ApiController]
 [Route("api/account")]
@@ -38,10 +39,37 @@ public class AccountController : ControllerBase
         return await _accountService.Register(registerDto);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAccountById(string id)
+    {
+        var account = await _accountService.GetAccountById(id);
+        if (account == null)
+        {
+            return NotFound(new { message = "Tài khoản không tồn tại!" });
+        }
+
+        return Ok(account);
+    }
+
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> UpdateAccount(string id, [FromBody] UpdateAccountDto updateAccountDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return await _accountService.UpdateAccount(id, updateAccountDto);
+    }
+
     [HttpPut("updateStatus/{id}")]
     public async Task<IActionResult> UpdateStatus(string id, [FromBody] bool status)
     {
         return await _accountService.UpdateStatus(id, status);
+    }
+
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteAccount(string id)
+    {
+        return await _accountService.DeleteAccountAsync(id);
     }
 
     [HttpPost("forgot-password")]

@@ -1,23 +1,28 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using TourAPI.Dtos.Account;
 using TourAPI.Interfaces;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
 using TourAPI.Models;
+using TourAPI.Repository;
 
 namespace TourAPI.Service
 {
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly ICustomerRepository _customerRepository;
         private readonly SignInManager<Account> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IEmailSender _emailSender;
 
-        public AccountService(IAccountRepository accountRepository, ITokenService tokenService, IEmailSender emailSender, SignInManager<Account> signInManager)
+        public AccountService(IAccountRepository accountRepository, ICustomerRepository customerRepository, ITokenService tokenService, IEmailSender emailSender, SignInManager<Account> signInManager)
         {
             _accountRepository = accountRepository;
+            _customerRepository = customerRepository;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -29,10 +34,28 @@ namespace TourAPI.Service
             return new OkObjectResult(accounts);
         }
 
+        public async Task<AccountDto> GetAccountById(string id)
+        {
+            var account = await _accountRepository.GetAccountByIdAsync(id);
+            if (account == null)
+            {
+                return null;
+            }
+
+            return new AccountDto
+            {
+                UserName = account.UserName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                LockoutEnabled = account.LockoutEnabled,
+                Role = await _accountRepository.IsUserAdminAsync(id) ? 1 : 0,
+            };
+        }
+
+
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             var user = await _accountRepository.GetAccountByUsernameAsync(loginDto.Username);
-            Console.WriteLine(user.UserName + " " + user.LockoutEnabled);
             if (user == null)
             {
                 return new UnauthorizedObjectResult("Tài khoản không tồn tại!");
@@ -64,20 +87,20 @@ namespace TourAPI.Service
         {
             try
             {
-                var existingAccount = await _accountRepository.GetAccountByUsernameAsync(registerDto.Username);
-                if (existingAccount != null)
+                var existingAccountByUsername = await _accountRepository.GetAccountByUsernameAsync(registerDto.Username);
+                if (existingAccountByUsername != null)
                 {
                     return new BadRequestObjectResult(new { message = "Tên đăng nhập đã tồn tại." });
                 }
 
-                var existingEmail = await _accountRepository.GetAccountByUsernameAsync(registerDto.Email);
-                if (existingEmail != null)
+                var existingAccountByEmail = await _accountRepository.GetAccountByEmailAsync(registerDto.Email);
+                if (existingAccountByEmail != null)
                 {
                     return new BadRequestObjectResult(new { message = "Email đã được sử dụng." });
                 }
 
-                var existingPhone = await _accountRepository.GetAccountByUsernameAsync(registerDto.Phone);
-                if (existingPhone != null)
+                var existingAccountByPhone = await _accountRepository.GetAccountByPhoneAsync(registerDto.Phone);
+                if (existingAccountByPhone != null)
                 {
                     return new BadRequestObjectResult(new { message = "Số điện thoại đã được sử dụng." });
                 }
@@ -87,12 +110,12 @@ namespace TourAPI.Service
                     UserName = registerDto.Username,
                     Email = registerDto.Email,
                     PhoneNumber = registerDto.Phone,
-                    LockoutEnabled = false,
                 };
 
                 var createdAccount = await _accountRepository.CreateAccountAsync(account, registerDto.Password);
                 if (createdAccount)
                 {
+                    // Tạo khách hàng liên kết với tài khoản
                     var customer = new Customer
                     {
                         Name = registerDto.CustomerName,
@@ -102,8 +125,9 @@ namespace TourAPI.Service
                         Status = 1,
                         AccountId = account.Id
                     };
-                    await _accountRepository.AddCustomerAsync(customer);
+                    await _customerRepository.AddCustomerAsync(customer);
 
+                    // Trả về kết quả
                     return new OkObjectResult(new NewAccountDto
                     {
                         UserName = account.UserName,
@@ -122,6 +146,7 @@ namespace TourAPI.Service
             }
         }
 
+
         public async Task<IActionResult> UpdateStatus(string id, bool status)
         {
             try
@@ -129,7 +154,6 @@ namespace TourAPI.Service
                 int statusToInt = status ? 0 : 1;
                 var success = await _accountRepository.UpdateCustomerStatusAsync(id, statusToInt);
                 var check = await _accountRepository.SetAccountLockoutAsync(id, status);
-                //Console.WriteLine(success + " " + check + " " + status + " " + statusToInt);
                 if (success && check)
                 {
                     return new OkObjectResult(new { message = "Status updated successfully" });
@@ -144,6 +168,52 @@ namespace TourAPI.Service
                 return new StatusCodeResult(500); // Lỗi chung
             }
         }
+
+        public async Task<IActionResult> UpdateAccount(string id, UpdateAccountDto updateAccountDto)
+        {
+            Console.WriteLine("Nhận yêu cầu cập nhật tài khoản:", JsonConvert.SerializeObject(updateAccountDto));
+            var account = await _accountRepository.GetAccountByIdAsync(id);
+            if (account == null)
+            {
+                Console.WriteLine("Không tìm thấy tài khoản với ID:", id);
+                return new NotFoundObjectResult(new { message = "Không tìm thấy tài khoản!" });
+            }
+
+            account.UserName = updateAccountDto.UserName;
+            account.Email = updateAccountDto.Email;
+            account.PhoneNumber = updateAccountDto.PhoneNumber;
+
+            account.PasswordHash = HashPasswordUsingIdentity(updateAccountDto.Password);
+            var result = await _accountRepository.UpdateAccountAsync(account);
+            if (!result)
+            {
+                return new BadRequestObjectResult(new { message = "Cập nhật tài khoản và mật khẩu thất bại!" });
+            }
+
+            var updateRoleResult = await _accountRepository.UpdateUserRolesAsync(account, updateAccountDto.Role);
+            if (!updateRoleResult)
+            {
+                return new BadRequestObjectResult(new { message = "Cập nhật vai trò thất bại!" });
+            }
+
+            return new JsonResult(new { message = "Cập nhật tài khoản và thông tin khách hàng thành công!" });
+        }
+
+        public async Task<IActionResult> DeleteAccountAsync(string id)
+        {
+            try
+            {
+                var success = await _accountRepository.DeleteAccountAsync(id);
+                if (success)
+                    return new OkObjectResult(new { message = "Xóa tài khoản thành công" });
+                return new NotFoundObjectResult(new { message = "Không tìm thấy tài khoản" });
+            }
+            catch (Exception ex)
+            {
+                return new StatusCodeResult(500); // Lỗi chung
+            }
+        }
+
 
         public async Task<IActionResult> ForgotPassword(string email)
         {

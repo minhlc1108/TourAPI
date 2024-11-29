@@ -31,6 +31,7 @@ namespace TourAPI.Service
                 Birthday = customer.Birthday.ToString("yyyy-MM-dd"),
                 Sex = customer.Sex == 0 ? "Nam" : "Nữ",
                 Status = customer.Status == 1 ? "Active" : "Locked",
+                AccountId = customer.AccountId,
                 CustomerPhone = _context.Users
                                         .Where(account => account.Id == customer.AccountId)
                                         .Select(account => account.PhoneNumber)
@@ -40,29 +41,28 @@ namespace TourAPI.Service
             return new OkObjectResult(result);
         }
 
-        public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
+        public async Task<Customer?> GetCustomerByAccountIdAsync(string accountId)
         {
-            return await _customerRepository.GetAllCustomersAsync();
+            return await _customerRepository.GetCustomerByAccountIdAsync(accountId);
         }
 
-        public async Task<Customer?> GetCustomerByIdAsync(int id)
+        public async Task<bool> UpdateCustomerAsync(string accountId, UpdateCustomerDto updateCustomerDto)
         {
-            return await _customerRepository.GetCustomerByIdAsync(id);
+            var customer = await _customerRepository.GetCustomerByAccountIdAsync(accountId);
+            Console.WriteLine(accountId + " " + updateCustomerDto.Name + " " + updateCustomerDto.Sex + " " + updateCustomerDto.Address + " " + updateCustomerDto.Birthday);
+            if (customer == null) return false;
+
+            customer.Name = updateCustomerDto.Name;
+            customer.Sex = updateCustomerDto.Sex;
+            customer.Address = updateCustomerDto.Address;
+            customer.Birthday = updateCustomerDto.Birthday;
+
+            return await _customerRepository.UpdateCustomerAsync(customer);
         }
 
-        public async Task AddCustomerAsync(Customer customer)
+        public async Task<bool> DeleteCustomerAsync(string id)
         {
-            await _customerRepository.AddCustomerAsync(customer);
-        }
-
-        public async Task UpdateCustomerAsync(Customer customer)
-        {
-            await _customerRepository.UpdateCustomerAsync(customer);
-        }
-
-        public async Task DeleteCustomerAsync(int id)
-        {
-            await _customerRepository.DeleteCustomerAsync(id);
+            return await _customerRepository.DeleteCustomerAsync(id);
         }
     }
 }

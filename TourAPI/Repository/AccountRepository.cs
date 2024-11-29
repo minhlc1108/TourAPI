@@ -23,13 +23,6 @@ namespace TourAPI.Repository
             return result.Succeeded;
         }
 
-        public async Task<bool> AddCustomerAsync(Customer customer)
-        {
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<IEnumerable<dynamic>> GetAllAccountsAsync()
         {
             return await _context.Users
@@ -39,6 +32,7 @@ namespace TourAPI.Repository
                     user.UserName,
                     user.Email,
                     user.LockoutEnabled,
+                    user.PhoneNumber,
                     CustomerName = _context.Customers
                         .Where(c => c.AccountId == user.Id)
                         .Select(c => c.Name)
@@ -47,16 +41,13 @@ namespace TourAPI.Repository
                 .ToListAsync();
         }
 
-
-        public async Task<bool> AccountExistsAsync(string username, string email, string phone)
-        {
-            return await _context.Users
-                .AnyAsync(u => u.UserName == username || u.Email == email || u.PhoneNumber == phone);
-        }
-
         public async Task<Account?> GetAccountByEmailAsync(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+        public async Task<Account> GetAccountByPhoneAsync(string phone)
+        {
+            return await _context.Users.FirstOrDefaultAsync(a => a.PhoneNumber == phone);
         }
 
         public async Task<bool> SetAccountLockoutAsync(string accountId, bool lockoutEnabled)
@@ -72,7 +63,7 @@ namespace TourAPI.Repository
             return true;
         }
 
-        public async Task<IdentityUser?> GetAccountByIdAsync(string id)
+        public async Task<Account?> GetAccountByIdAsync(string id)
         {
             return await _userManager.FindByIdAsync(id);
         }
@@ -84,22 +75,19 @@ namespace TourAPI.Repository
 
         public async Task<bool> IsUserAdminAsync(string id)
         {
-            // Lấy tất cả các role của người dùng
             var userRoles = await _context.UserRoles
                 .Where(ur => ur.UserId == id)
-                .ToListAsync(); // Lấy tất cả các roles của người dùng
-
-            // Tìm kiếm role Admin
+                .ToListAsync();
+                
             var adminRole = await _context.Roles
                 .Where(r => r.Name == "Admin")
-                .FirstOrDefaultAsync(); // Tìm kiếm role Admin
+                .FirstOrDefaultAsync();
 
             if (adminRole == null)
             {
-                return false; // Nếu role Admin không tồn tại, trả về false
+                return false;
             }
 
-            // Kiểm tra xem người dùng có role Admin hay không
             return userRoles.Any(ur => ur.RoleId == adminRole.Id);
         }
 
@@ -122,5 +110,47 @@ namespace TourAPI.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> UpdateUserRolesAsync(Account account, string newRole)
+        {
+            var currentRoles = await _userManager.GetRolesAsync(account); 
+            if (!currentRoles.Contains(newRole))
+            {
+                foreach (var role in currentRoles)
+                {
+                    await _userManager.RemoveFromRoleAsync(account, role);
+                }
+                var result = await _userManager.AddToRoleAsync(account, newRole);
+                return result.Succeeded;
+            }
+            return true;
+        }
+
+        public async Task<bool> DeleteAccountAsync(string id)
+        {
+            try
+            {
+                var account = await _userManager.FindByIdAsync(id);
+                if (account != null)
+                {
+                    var roles = await _userManager.GetRolesAsync(account);
+                    foreach (var role in roles)
+                    {
+                        await _userManager.RemoveFromRoleAsync(account, role);
+                    }
+
+                    _context.Users.Remove(account);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting account: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

@@ -74,6 +74,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 builder.Services.AddIdentity<Account, IdentityRole>(options =>
 {
+    options.Lockout.AllowedForNewUsers = false;
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
