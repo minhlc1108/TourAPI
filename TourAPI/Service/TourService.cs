@@ -64,6 +64,26 @@ namespace TourAPI.Service
             return tour.ToTourDTO();
         }
 
+        public async Task<TourDetailDto> GetTourDetail(int id)
+        {
+            var tour = await _tourRepo.GetTourDetail(id);
+            if (tour == null)
+            {
+                throw new NotFoundException("Không tìm thấy tour");
+            }
+            return tour;
+        }
+
+        public async Task<List<TourDetailDto>> GetAllToursAndToursSchedule()
+        {
+            var tours = await _tourRepo.GetAllToursAndToursSchedule();
+            if (tours == null)
+            {
+                throw new NotFoundException("Không tìm thấy tour");
+            }
+            return tours;
+        }
+
         public async Task<TourDto> UpdateAsync(int id, UpdateTourReqDto updateTourReqDto)
         {
             var tour = await _tourRepo.GetByIdAsync(id);

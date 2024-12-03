@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TourAPI.Data;
+using TourAPI.Dtos.Tour;
 using TourAPI.Helpers;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Models;
@@ -119,5 +120,60 @@ namespace TourAPI.Repository
             await _context.SaveChangesAsync();
             return tourModel;
         }
+        public async Task<TourDetailDto> GetTourDetail(int id)
+        {
+            var tour = await _context.Tours
+                .Where(t => t.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (tour == null)
+                throw new Exception("Tour not found");
+
+            var tourSchedules = await _context.TourSchedules
+                .Where(ts => ts.TourId == id)
+                .ToListAsync();
+
+
+            return new TourDetailDto
+            {
+                Id = tour.Id,
+                Name = tour.Name,
+                Duration = tour.Duration,
+                Destination = tour.Destination,
+                Departure = tour.Departure,
+                Schedules = tourSchedules.Select(ts => new TourScheduleDto
+                {
+                    Id = ts.Id,
+                    DepartureDate = ts.DepartureDate,
+                    ReturnDate = ts.ReturnDate,
+                    PriceAdult = ts.PriceAdult,
+                    PriceChild = ts.PriceChild
+                }).ToList()
+            };
+        }
+        public async Task<List<TourDetailDto>> GetAllToursAndToursSchedule()
+        {
+            var tours = await _context.Tours
+                .Include(t => t.TourSchedules) 
+                .ToListAsync();
+
+            return tours.Select(tour => new TourDetailDto
+            {
+                Id = tour.Id,
+                Name = tour.Name,
+                Duration = tour.Duration,
+                Destination = tour.Destination,
+                Departure = tour.Departure,
+                Schedules = tour.TourSchedules.Select(ts => new TourScheduleDto
+                {
+                    Id = ts.Id,
+                    DepartureDate = ts.DepartureDate,
+                    ReturnDate = ts.ReturnDate,
+                    PriceAdult = ts.PriceAdult,
+                    PriceChild = ts.PriceChild
+                }).ToList()
+            }).ToList();
+        }
+
     }
 }

@@ -29,6 +29,20 @@ namespace TourAPI.Controllers
         }
 
         [HttpGet]
+        [Route("get-tours")]
+        public async Task<IActionResult> GetAllToursAndToursSchedule()
+        {
+            return Ok(await _tourService.GetAllToursAndToursSchedule());
+        }
+
+        [HttpGet]
+        [Route("get-detail/{id:int}")]
+        public async Task<IActionResult> GetTourDetail([FromRoute] int id)
+        {
+            return Ok(await _tourService.GetTourDetail(id));
+        }
+
+        [HttpGet]
         [Route("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace TourAPI.Interfaces.Service
 
         Task<TourDto> CreateAsync(CreateTourReqDto createTourReqDto);
         Task<TourDto> UpdateAsync(int id, UpdateTourReqDto updateTourReqDto);
+        Task<TourDetailDto> GetTourDetail(int id);
+        Task<List<TourDetailDto>> GetAllToursAndToursSchedule();
     }
 }
