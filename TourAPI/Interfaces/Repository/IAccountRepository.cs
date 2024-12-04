@@ -12,7 +12,6 @@ namespace TourAPI.Interfaces.Repository
         Task<bool> IsUserAdminAsync(string id);
         Task<bool> UpdateAccountAsync(Account account);
         Task<bool> UpdateCustomerStatusAsync(string accountId, int status);
-        Task<bool> UpdateAccountWithPasswordAsync(Account account, string password);
         Task<bool> UpdateUserRolesAsync(Account account, string newRole);
         Task<bool> CreateAccountAsync(Account account, string password);
         Task<bool> DeleteAccountAsync(string id);

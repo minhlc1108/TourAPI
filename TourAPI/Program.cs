@@ -172,8 +172,8 @@ app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials()
-    //.WithOrigins("https://yourtrusteddomain.com")  // Restrict to a trusted domain
-    .SetIsOriginAllowed(origin => true));  // Set specific domains in production
+    .WithOrigins("http://localhost:5173")
+    .SetIsOriginAllowed(origin => true));
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -182,8 +182,10 @@ namespace TourAPI.Service
             account.UserName = updateAccountDto.UserName;
             account.Email = updateAccountDto.Email;
             account.PhoneNumber = updateAccountDto.PhoneNumber;
-
-            account.PasswordHash = HashPasswordUsingIdentity(updateAccountDto.Password);
+            if (!string.IsNullOrEmpty(updateAccountDto.Password))
+            {
+                account.PasswordHash = HashPasswordUsingIdentity(updateAccountDto.Password);
+            }
             var result = await _accountRepository.UpdateAccountAsync(account);
             if (!result)
             {
