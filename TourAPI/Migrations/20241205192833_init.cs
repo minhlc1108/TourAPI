@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TourAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -82,23 +82,6 @@ namespace TourAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Promotions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Transports",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Detail = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    DepartureLocation = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    DestinationLocation = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transports", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -216,6 +199,7 @@ namespace TourAPI.Migrations
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Sex = table.Column<int>(type: "int", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     RelatedCustomerId = table.Column<int>(type: "int", nullable: true),
                     AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -242,8 +226,11 @@ namespace TourAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Departure = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Destination = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Duration = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -264,9 +251,8 @@ namespace TourAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsAvatar = table.Column<bool>(type: "bit", nullable: false),
-                    TourId = table.Column<int>(type: "int", nullable: true)
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TourId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -275,7 +261,8 @@ namespace TourAPI.Migrations
                         name: "FK_TourImages_Tours_TourId",
                         column: x => x.TourId,
                         principalTable: "Tours",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -284,10 +271,10 @@ namespace TourAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DepartureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Remain = table.Column<int>(type: "int", nullable: false),
                     PriceAdult = table.Column<int>(type: "int", nullable: false),
                     PriceChild = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -334,64 +321,13 @@ namespace TourAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TourPromotions",
-                columns: table => new
-                {
-                    PromotionId = table.Column<int>(type: "int", nullable: false),
-                    TourScheduleId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TourPromotions", x => new { x.PromotionId, x.TourScheduleId });
-                    table.ForeignKey(
-                        name: "FK_TourPromotions_Promotions_PromotionId",
-                        column: x => x.PromotionId,
-                        principalTable: "Promotions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TourPromotions_TourSchedules_TourScheduleId",
-                        column: x => x.TourScheduleId,
-                        principalTable: "TourSchedules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TransportDetails",
-                columns: table => new
-                {
-                    TransportId = table.Column<int>(type: "int", nullable: false),
-                    TourScheduleId = table.Column<int>(type: "int", nullable: false),
-                    DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransportDetails", x => new { x.TransportId, x.TourScheduleId });
-                    table.ForeignKey(
-                        name: "FK_TransportDetails_TourSchedules_TourScheduleId",
-                        column: x => x.TourScheduleId,
-                        principalTable: "TourSchedules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TransportDetails_Transports_TransportId",
-                        column: x => x.TransportId,
-                        principalTable: "Transports",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BookingDetails",
                 columns: table => new
                 {
                     BookingId = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -414,8 +350,8 @@ namespace TourAPI.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "49525abd-e634-4bfe-8c07-0eae6bea6b75", null, "User", "USER" },
-                    { "f33b6939-37bd-4894-8ec7-052e7c62dd18", null, "Admin", "ADMIN" }
+                    { "14a30001-e0fa-4a36-9c34-8cb147ec28e3", null, "Admin", "ADMIN" },
+                    { "c33af664-c449-4519-b192-34695f5ea73d", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -492,11 +428,6 @@ namespace TourAPI.Migrations
                 column: "TourId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TourPromotions_TourScheduleId",
-                table: "TourPromotions",
-                column: "TourScheduleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tours_CategoryId",
                 table: "Tours",
                 column: "CategoryId");
@@ -505,11 +436,6 @@ namespace TourAPI.Migrations
                 name: "IX_TourSchedules_TourId",
                 table: "TourSchedules",
                 column: "TourId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransportDetails_TourScheduleId",
-                table: "TransportDetails",
-                column: "TourScheduleId");
         }
 
         /// <inheritdoc />
@@ -534,25 +460,16 @@ namespace TourAPI.Migrations
                 name: "BookingDetails");
 
             migrationBuilder.DropTable(
+                name: "Promotions");
+
+            migrationBuilder.DropTable(
                 name: "TourImages");
-
-            migrationBuilder.DropTable(
-                name: "TourPromotions");
-
-            migrationBuilder.DropTable(
-                name: "TransportDetails");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Bookings");
-
-            migrationBuilder.DropTable(
-                name: "Promotions");
-
-            migrationBuilder.DropTable(
-                name: "Transports");
 
             migrationBuilder.DropTable(
                 name: "Customers");

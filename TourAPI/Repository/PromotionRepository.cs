@@ -91,7 +91,6 @@ namespace TourAPI.Repository
         public async Task<Promotion?> GetByIdAsync(int id)
         {
             return await _context.Promotions
-                .Include(p => p.TourPromotions)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 

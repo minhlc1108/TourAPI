@@ -25,6 +25,18 @@ namespace TourAPI.Repository
             return tourModel;
         }
 
+        public async Task<Tour?> DeleteAsync(int id)
+        {
+            var tour = await _context.Tours.FirstOrDefaultAsync(t => t.Id == id);
+            if (tour == null)
+            {
+                return null;
+            }
+            tour.Status = 0;
+            await _context.SaveChangesAsync();
+            return tour;
+        }
+
         public async Task<(List<Tour>, int totalCount)> GetAllAsync(TourQueryObject query)
         {
             var tours = _context.Tours.Include(t => t.Category).Include(t => t.TourImages).Include(t => t.TourSchedules).AsQueryable();
@@ -110,7 +122,7 @@ namespace TourAPI.Repository
 
         public async Task<Tour?> GetByIdAsync(int id)
         {
-            return await _context.Tours.Include(t => t.Category).Include(t => t.TourImages).FirstOrDefaultAsync(t => t.Id == id);
+            return await _context.Tours.Include(t => t.Category).Include(t => t.TourImages).Include(t => t.TourSchedules).FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<Tour> UpdateAsync(Tour tourModel)

@@ -14,5 +14,6 @@ namespace TourAPI.Interfaces.Repository
         Task<Tour?> GetByIdAsync(int id);
         Task<Tour> CreateAsync(Tour tourModel);
         Task<Tour> UpdateAsync(Tour tourModel);
+        Task<Tour?> DeleteAsync(int id);
     }
 }

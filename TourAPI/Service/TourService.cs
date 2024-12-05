@@ -42,6 +42,16 @@ namespace TourAPI.Service
             return tourModel.ToTourDTO();
         }
 
+        public async Task<TourDto?> DeleteAsync(int id)
+        {
+            var tour = await _tourRepo.DeleteAsync(id);
+            if(tour == null)
+            {
+                throw new NotFoundException("Không tìm thấy tour");
+            }
+            return tour.ToTourDTO();
+        }
+
         public async Task<TourResultDto> GetAllAsync(TourQueryObject query)
         {
             var (tours, totalCount) = await _tourRepo.GetAllAsync(query);

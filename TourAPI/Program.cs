@@ -62,7 +62,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<Account, IdentityRole> (options => {
+builder.Services.AddIdentity<Account, IdentityRole>(options =>
+{
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
@@ -107,19 +108,8 @@ builder.Services.AddScoped<ITourImageRepository, TourImageRepository>();
 
 builder.Services.AddScoped<ITourScheduleService, TourScheduleService>();
 builder.Services.AddScoped<ITourScheduleRepository, TourScheduleRepository>();
-
-builder.Services.AddScoped<ITransportService, TransportService>();
-builder.Services.AddScoped<ITransportRepository, TransportRepository>();
-
-builder.Services.AddScoped<ITransportDetailService, TransportDetailService>();
-builder.Services.AddScoped<ITransportDetailRepository, TransportDetailRepository>();
-
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
-
-builder.Services.AddScoped<ITourPromotionService, TourPromotionService>();
-builder.Services.AddScoped<ITourPromotionRepository, TourPromotionRepository>();
-
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
