@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TourAPI.Dtos.Account;
-using TourAPI.Dtos.Category;
+using TourAPI.Dtos.Customer;
 using TourAPI.Models;
 
 namespace TourAPI.Mappers
@@ -29,6 +28,7 @@ namespace TourAPI.Mappers
 
             };
         }
+
 
 
     }

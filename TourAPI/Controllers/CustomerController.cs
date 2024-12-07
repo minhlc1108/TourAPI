@@ -1,72 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TourAPI.Dtos.Account;
 using TourAPI.Dtos.Customer;
 using TourAPI.Helpers;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
-using TourAPI.Mappers;
 
-namespace TourAPI.Controllers
+[ApiController]
+[Route("api/customer")]
+public class CustomerController : ControllerBase
 {
-    [ApiController]
-    [Route("api/customer")]
-    public class CustomerController : ControllerBase
+    private readonly ICustomerService _customerService;
+
+    public CustomerController(ICustomerService customerService)
     {
-        // private readonly ICustomerRepository _customRepo;
-        private readonly ICustomerService _customService;
+        _customerService = customerService;
+    }
 
-         public CustomerController(ICustomerService customService)
+    [HttpGet("listCustomer")]
+    public async Task<IActionResult> GetCustomers()
+    {
+        return await _customerService.GetCustomers();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCustomerByAccountId(string id)
+    {
+        if (!ModelState.IsValid)
         {
-            _customService = customService;
+            return BadRequest(ModelState);
         }
+        var customer = await _customerService.GetCustomerByAccountIdAsync(id);
+        return Ok(customer);
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] CustomerQueryObject query)
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> UpdateCustomer(string id, [FromBody] UpdateCustomerDto updateCustomerDto)
+    {
+        if (!ModelState.IsValid)
         {
-             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var CustomerResultDto = await _customService.GetAllAsync(query);
-            //  Console.WriteLine("al>>>>>>",categorieResultDto);
-            return Ok(CustomerResultDto);
+            return BadRequest(ModelState);
         }
+        var result = await _customerService.UpdateCustomerAsync(id, updateCustomerDto);
+        return Ok("Cập nhật thông tin khách hàng thành công!");
+    }
 
-
-         [HttpGet]
-        [Route("{id:int}")]
-         // Chỉ định rõ HTTP GET và route với tham số id
-        public async Task<IActionResult> GetById([FromRoute] int id)
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteCustomer(string id)
+    {
+        if (!ModelState.IsValid)
         {
-            var custom = await _customService.GetByIdAsync(id);
-            if (custom == null)
-            {
-                return NotFound("Không tìm thấy Custom");
-            }
-            
-            return Ok(custom);
+            return BadRequest(ModelState);
         }
-
-        [HttpPut]
-        [Route("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCustomerReqDto customerDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var updatedCustomerDto = await _customService.UpdateAsync(id, customerDto);
-
-            return Ok(updatedCustomerDto);
-        }
-
-
-       
-
-        
+        var result = await _customerService.DeleteCustomerAsync(id);
+        return Ok("Xóa khách hàng thành công!");
     }
 }

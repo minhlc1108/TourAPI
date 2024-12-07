@@ -1,7 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using TourAPI.Data;
 using TourAPI.Dtos.Account;
 using TourAPI.Dtos.Category;
 using TourAPI.Dtos.Customer;
@@ -17,10 +19,13 @@ namespace TourAPI.Service
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepo;
-        public CustomerService(ICustomerRepository customerRepo)
+        private readonly ApplicationDBContext _context;
+        public CustomerService(ICustomerRepository customerRepo, ApplicationDBContext context)
         {
             _customerRepo = customerRepo;
+            _context =  context;
         }
+
         // public async Task<PersonalUserResponseDto?> GetByIdAsync(int id)
         // {
         //     var customer = await _customerRepo.GetByIdAsync(id);
@@ -34,31 +39,38 @@ namespace TourAPI.Service
         //     return customer.ToPersonalUserResponseDto();
 
         // }
+
+        
+        public async Task<IActionResult> GetCustomers()
+        {
+            var customers = await _customerRepo.GetAllCustomersAsync();
+            var result = customers.Select(customer => new
+            {
+                STT = customer.Id,
+                Name = customer.Name,
+                Address = customer.Address,
+                Birthday = customer.Birthday.ToString("yyyy-MM-dd"),
+                Sex = customer.Sex == 0 ? "Nam" : "Nữ",
+                Status = customer.Status == 1 ? "Active" : "Locked",
+                AccountId = customer.AccountId,
+                CustomerPhone = _context.Users
+                                        .Where(account => account.Id == customer.AccountId)
+                                        .Select(account => account.PhoneNumber)
+                                        .FirstOrDefault()
+            }).ToList();
+
+            return new OkObjectResult(result);
+        }
+
           public async Task<CustomerDto?> GetByIdAsync(int id)
         {
             var customer = await _customerRepo.GetByIdAsync(id);
             // Console.WriteLine("al>>>>>>",categorieResultDto);
             if (customer == null)
             {
-                throw new NotFoundException("Không tìm thấy danh mục");
+                throw new NotFoundException("Không tìm thấy khách hàng");
             }
-        //    customer.Bookings.ForEach(t => 
-        //    {
-        //     if( t.TourSchedule != null)
-        //      {Console.WriteLine("Hello, World!" , t.TourSchedule);
-        //      }
-        //      else 
-        //      {Console.WriteLine("khong on roi ~" );
-
-        //      }
-
-
-        //    });
-
-            //  Console.WriteLine("Hello, World!" , customer);
-            // return customer.ToPersonalUserResponseDto();
             return customer.ToCustomerDto();
-
         }
         
         public async Task<CustomerResultDto> GetAllAsync(CustomerQueryObject query)
@@ -80,7 +92,7 @@ namespace TourAPI.Service
             var customerModel = await _customerRepo.GetByIdAsync(id);
             if (customerModel == null)
             {
-                throw new NotFoundException("Không tìm thấy danh mục");
+                throw new NotFoundException("Không tìm thấy khách hàng");
             }
 
             customerModel.Name = CustomerDto.Name;
@@ -93,6 +105,29 @@ namespace TourAPI.Service
              await _customerRepo.UpdateAsync(customerModel);
 
             return customerModel.ToCustomerDto();
+        }
+
+        public async Task<Customer?> GetCustomerByAccountIdAsync(string accountId)
+        {
+             return await _customerRepo.GetCustomerByAccountIdAsync(accountId);
+        }
+
+        public async Task<bool> UpdateCustomerAsync(string accountId, UpdateCustomerDto updateCustomerDto)
+        {
+            var customer = await _customerRepo.GetCustomerByAccountIdAsync(accountId);
+            if (customer == null) return false;
+
+            customer.Name = updateCustomerDto.Name;
+            customer.Sex = updateCustomerDto.Sex;
+            customer.Address = updateCustomerDto.Address;
+            customer.Birthday = updateCustomerDto.Birthday;
+
+            return await _customerRepo.UpdateCustomerAsync(customer);
+        }
+
+        public async Task<bool> DeleteCustomerAsync(string id)
+        {
+             return await _customerRepo.DeleteCustomerAsync(id);
         }
     }
 }
