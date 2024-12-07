@@ -12,8 +12,8 @@ using TourAPI.Data;
 namespace TourAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241119081029_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241205192833_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,13 +54,13 @@ namespace TourAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "aa6cbfbd-af79-444f-943c-1c92ebb56fb3",
+                            Id = "14a30001-e0fa-4a36-9c34-8cb147ec28e3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d57f31b4-c6f8-4fa5-9c76-24203ee31dd2",
+                            Id = "c33af664-c449-4519-b192-34695f5ea73d",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -340,6 +340,9 @@ namespace TourAPI.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<DateTime>("Birthday")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -429,6 +432,9 @@ namespace TourAPI.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -447,10 +453,7 @@ namespace TourAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsAvatar")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("TourId")
+                    b.Property<int>("TourId")
                         .HasColumnType("int");
 
                     b.Property<string>("Url")
@@ -461,21 +464,6 @@ namespace TourAPI.Migrations
                     b.HasIndex("TourId");
 
                     b.ToTable("TourImages");
-                });
-
-            modelBuilder.Entity("TourAPI.Models.TourPromotion", b =>
-                {
-                    b.Property<int>("PromotionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TourScheduleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PromotionId", "TourScheduleId");
-
-                    b.HasIndex("TourScheduleId");
-
-                    b.ToTable("TourPromotions");
                 });
 
             modelBuilder.Entity("TourAPI.Models.TourSchedule", b =>
@@ -498,7 +486,7 @@ namespace TourAPI.Migrations
                     b.Property<int>("PriceChild")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int>("Remain")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReturnDate")
@@ -515,65 +503,6 @@ namespace TourAPI.Migrations
                     b.HasIndex("TourId");
 
                     b.ToTable("TourSchedules");
-                });
-
-            modelBuilder.Entity("TourAPI.Models.Transport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DepartureLocation")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("DestinationLocation")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Detail")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Transports");
-                });
-
-            modelBuilder.Entity("TourAPI.Models.TransportDetail", b =>
-                {
-                    b.Property<int>("TransportId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TourScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ArrivalTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DepartureTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("TransportId", "TourScheduleId");
-
-                    b.HasIndex("TourScheduleId");
-
-                    b.ToTable("TransportDetails");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -695,28 +624,11 @@ namespace TourAPI.Migrations
                 {
                     b.HasOne("TourAPI.Models.Tour", "Tour")
                         .WithMany("TourImages")
-                        .HasForeignKey("TourId");
+                        .HasForeignKey("TourId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Tour");
-                });
-
-            modelBuilder.Entity("TourAPI.Models.TourPromotion", b =>
-                {
-                    b.HasOne("TourAPI.Models.Promotion", "Promotion")
-                        .WithMany("TourPromotions")
-                        .HasForeignKey("PromotionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TourAPI.Models.TourSchedule", "TourSchedule")
-                        .WithMany("TourPromotions")
-                        .HasForeignKey("TourScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Promotion");
-
-                    b.Navigation("TourSchedule");
                 });
 
             modelBuilder.Entity("TourAPI.Models.TourSchedule", b =>
@@ -728,25 +640,6 @@ namespace TourAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Tour");
-                });
-
-            modelBuilder.Entity("TourAPI.Models.TransportDetail", b =>
-                {
-                    b.HasOne("TourAPI.Models.TourSchedule", "TourSchedule")
-                        .WithMany("TransportDetails")
-                        .HasForeignKey("TourScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TourAPI.Models.Transport", "Transport")
-                        .WithMany("TransportDetails")
-                        .HasForeignKey("TransportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TourSchedule");
-
-                    b.Navigation("Transport");
                 });
 
             modelBuilder.Entity("TourAPI.Models.Booking", b =>
@@ -766,11 +659,6 @@ namespace TourAPI.Migrations
                     b.Navigation("Bookings");
                 });
 
-            modelBuilder.Entity("TourAPI.Models.Promotion", b =>
-                {
-                    b.Navigation("TourPromotions");
-                });
-
             modelBuilder.Entity("TourAPI.Models.Tour", b =>
                 {
                     b.Navigation("TourImages");
@@ -781,15 +669,6 @@ namespace TourAPI.Migrations
             modelBuilder.Entity("TourAPI.Models.TourSchedule", b =>
                 {
                     b.Navigation("Bookings");
-
-                    b.Navigation("TourPromotions");
-
-                    b.Navigation("TransportDetails");
-                });
-
-            modelBuilder.Entity("TourAPI.Models.Transport", b =>
-                {
-                    b.Navigation("TransportDetails");
                 });
 #pragma warning restore 612, 618
         }

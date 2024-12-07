@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TourAPI.Models
+namespace TourAPI.Dtos.TourSchedule
 {
-    [Table("TourSchedules")]
-    public class TourSchedule
+    public class TourScheduleResponseDto
     {
         public int Id { get; set; }
         public string? Name { get; set; } = String.Empty;
@@ -19,7 +16,5 @@ namespace TourAPI.Models
         public int PriceChild { get; set; }
         public int Status { get; set; } = 1;
         public int TourId { get; set; }
-        public Tour? Tour { get; set; }
-        public List<Booking> Bookings {get; set;} = new List<Booking>();
     }
 }

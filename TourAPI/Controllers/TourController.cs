@@ -70,5 +70,13 @@ namespace TourAPI.Controllers
             var updatedTourDto = await _tourService.UpdateAsync(id, tourDto);
             return Ok(updatedTourDto);
         }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var deletedTourDto = await _tourService.DeleteAsync(id);
+            return Ok(deletedTourDto);
+        }
     }
 }

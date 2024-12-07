@@ -18,5 +18,6 @@ namespace TourAPI.Interfaces.Service
         Task<TourDto> UpdateAsync(int id, UpdateTourReqDto updateTourReqDto);
         Task<TourDetailDto> GetTourDetail(int id);
         Task<List<TourDetailDto>> GetAllToursAndToursSchedule();
+        Task<TourDto?> DeleteAsync(int id);
     }
 }

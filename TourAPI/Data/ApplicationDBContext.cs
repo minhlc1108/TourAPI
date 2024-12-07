@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using TourAPI.Models;
 
 namespace TourAPI.Data
@@ -13,18 +12,22 @@ namespace TourAPI.Data
     {
         public ApplicationDBContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
-
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.ConfigureWarnings(warnings =>
+                warnings.Ignore(RelationalEventId.PendingModelChangesWarning)
+            );
+        }
         public DbSet<Tour> Tours { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Transport> Transports { get; set; }
-        public DbSet<TransportDetail> TransportDetails { get; set; }
         public DbSet<TourImage> TourImages { get; set; }
         public DbSet<TourSchedule> TourSchedules { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
-        public DbSet<TourPromotion> TourPromotions { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<BookingDetail> BookingDetails { get; set; }
 
@@ -33,38 +36,14 @@ namespace TourAPI.Data
             base.OnModelCreating(builder);
 
             builder.Entity<Customer>()
-            .HasOne(c => c.Account)
-            .WithOne()
-            .HasForeignKey<Customer>(c => c.AccountId);
+                .HasOne(c => c.Account)
+                .WithOne()
+                .HasForeignKey<Customer>(c => c.AccountId);
 
             builder.Entity<Customer>()
-            .HasOne(c => c.RelatedCustomer)
-            .WithOne()
-            .HasForeignKey<Customer>(c => c.RelatedCustomerId);
-
-            builder.Entity<TransportDetail>(x => x.HasKey(td => new { td.TransportId, td.TourScheduleId }));
-
-            builder.Entity<TransportDetail>()
-                .HasOne(td => td.Transport)
-                .WithMany(t => t.TransportDetails)
-                .HasForeignKey(td => td.TransportId);
-
-            builder.Entity<TransportDetail>()
-                .HasOne(td => td.TourSchedule)
-                .WithMany(ts => ts.TransportDetails)
-                .HasForeignKey(td => td.TourScheduleId);
-
-            builder.Entity<TourPromotion>(x => x.HasKey(tp => new { tp.PromotionId, tp.TourScheduleId }));
-
-            builder.Entity<TourPromotion>()
-                .HasOne(tp => tp.Promotion)
-                .WithMany(p => p.TourPromotions)
-                .HasForeignKey(tp => tp.PromotionId);
-
-            builder.Entity<TourPromotion>()
-                .HasOne(tp => tp.TourSchedule)
-                .WithMany(ts => ts.TourPromotions)
-                .HasForeignKey(tp => tp.TourScheduleId);
+                .HasOne(c => c.RelatedCustomer)
+                .WithOne()
+                .HasForeignKey<Customer>(c => c.RelatedCustomerId);
 
             builder.Entity<Booking>(x => x.HasKey(b => b.Id));
 
@@ -75,24 +54,24 @@ namespace TourAPI.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Booking>()
-                            .HasOne(b => b.TourSchedule)
-                            .WithMany(ts => ts.Bookings)
-                            .HasForeignKey(b => b.TourScheduleId)
-                             .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(b => b.TourSchedule)
+                .WithMany(ts => ts.Bookings)
+                .HasForeignKey(b => b.TourScheduleId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<BookingDetail>(x => x.HasKey(bd => new { bd.BookingId, bd.CustomerId }));
+
+            builder.Entity<BookingDetail>()
+                .HasOne(bd => bd.Booking)
+                .WithMany(b => b.BookingDetails)
+                .HasForeignKey(bd => bd.BookingId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<BookingDetail>()
                 .HasOne(bd => bd.Customer)
                 .WithMany(c => c.BookingDetails)
                 .HasForeignKey(bd => bd.CustomerId)
-                 .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<BookingDetail>()
-                            .HasOne(bd => bd.Booking)
-                            .WithMany(c => c.BookingDetails)
-                            .HasForeignKey(bd => bd.BookingId)
-                             .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction);
 
             List<IdentityRole> roles = new List<IdentityRole> {
                 new IdentityRole {
@@ -107,4 +86,5 @@ namespace TourAPI.Data
             builder.Entity<IdentityRole>().HasData(roles);
         }
     }
+
 }
