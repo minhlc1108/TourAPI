@@ -21,19 +21,26 @@ namespace TourAPI.Controllers
         }
 
         [HttpGet]
-        [Route("{tourId:int}")]
-        public async Task<IActionResult> GetByTourId([FromRoute] int tourId, [FromQuery] TourScheduleQueryObject queryObject)
+        public async Task<IActionResult> GetTourSchedules([FromQuery] TourScheduleQueryObject queryObject)
         {
-            var result = await tourScheduleService.GetByTourId(tourId, queryObject);
+            var result = await tourScheduleService.GetTourSchedules(queryObject);
             return Ok(result);
         }
 
-        [HttpPost] 
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var result = await tourScheduleService.GetByIdAsync(id);
+            return Ok(result);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateTourScheduleRequestDto requestDto)
         {
-             if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-                
+
             var result = await tourScheduleService.CreateAsync(requestDto);
             return Ok(result);
         }
@@ -44,7 +51,7 @@ namespace TourAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-                
+
             var result = await tourScheduleService.UpdateAsync(id, requestDto);
             return Ok(result);
         }

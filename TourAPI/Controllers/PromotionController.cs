@@ -33,6 +33,18 @@ namespace TourAPI.Controllers
             return Ok(promotionsResultDto);
         }
 
+        [HttpGet]
+        [Route("code/{code}")]
+        public async Task<IActionResult> GetByCode([FromRoute] string code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var promotionsResultDto = await _promotionService.GetByCodeAsync(code);
+            return Ok(promotionsResultDto);
+        }
+        
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {

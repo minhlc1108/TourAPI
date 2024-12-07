@@ -41,12 +41,12 @@ namespace TourAPI.Repository
 
         public async Task<TourSchedule?> GetByIdAsync(int id)
         {
-            return await _context.TourSchedules.FirstOrDefaultAsync(ts => ts.Id == id);
+            return await _context.TourSchedules.Include(ts => ts.Tour).ThenInclude(t => t.TourImages).FirstOrDefaultAsync(ts => ts.Id == id && ts.Status == 1);
         }
 
-        public async Task<(List<TourSchedule>, int total)> GetByTourId(int tourId, TourScheduleQueryObject queryObject)
+        public async Task<(List<TourSchedule>, int total)> GetTourSchedules(TourScheduleQueryObject queryObject)
         {
-            var tourSchedules = _context.TourSchedules.Where(ts => ts.TourId == tourId).AsQueryable();
+            var tourSchedules = _context.TourSchedules.AsQueryable();
 
 
             if (!string.IsNullOrWhiteSpace(queryObject.Name))
@@ -91,9 +91,11 @@ namespace TourAPI.Repository
                 {
                     tourSchedules = queryObject.IsDecsending ? tourSchedules.OrderByDescending(ts => ts.PriceChild) : tourSchedules.OrderBy(ts => ts.PriceChild);
                 }
-
             }
-
+            
+            if(queryObject.TourId != null){
+             tourSchedules = tourSchedules.Where(ts => ts.TourId == queryObject.TourId);
+            }
             tourSchedules = tourSchedules.Where(ts => ts.Status == queryObject.Status);
 
             int totalCount = await tourSchedules.CountAsync();

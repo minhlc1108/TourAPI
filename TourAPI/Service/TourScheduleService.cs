@@ -52,9 +52,18 @@ namespace TourAPI.Service
             return tourSchedule.ToTourScheduleResponseDto();
         }
 
-        public async Task<TourScheduleResultDto> GetByTourId(int tourId, TourScheduleQueryObject queryObject)
+        public async Task<TourScheduleDto?> GetByIdAsync(int id)
         {
-            var (tourSchedules, total) = await _tourScheduleRepository.GetByTourId(tourId, queryObject);
+            var tourSchedule = await _tourScheduleRepository.GetByIdAsync(id);
+            if(tourSchedule == null) {
+                throw new NotFoundException("Tour schedule not found");
+            }
+            return tourSchedule.ToTourScheduleDto();
+        }
+
+        public async Task<TourScheduleResultDto> GetTourSchedules(TourScheduleQueryObject queryObject)
+        {
+            var (tourSchedules, total) = await _tourScheduleRepository.GetTourSchedules(queryObject);
             return new TourScheduleResultDto
             {
                 TourSchedules = tourSchedules.Select(t => t.ToTourScheduleResponseDto()).ToList(),

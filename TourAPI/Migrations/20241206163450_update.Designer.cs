@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TourAPI.Data;
 
@@ -11,9 +12,11 @@ using TourAPI.Data;
 namespace TourAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241206163450_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace TourAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "83e0a0ea-9af3-455c-aee2-03449192c778",
+                            Id = "4865a870-3d51-485d-a973-5624ae84b1bd",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2ff4fa00-cfac-403d-a81a-4292588e325a",
+                            Id = "5a76e5dd-3895-491b-b4de-7048e044fd73",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -410,8 +413,7 @@ namespace TourAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
+                    b.HasIndex("Code");
 
                     b.ToTable("Promotions");
                 });

@@ -41,6 +41,9 @@ namespace TourAPI.Middleware
                 case NotFoundException:
                     statusCode = (int)HttpStatusCode.NotFound;
                     break;
+                case BadHttpRequestException:
+                    statusCode = (int)HttpStatusCode.BadRequest;
+                    break;
                 default:
                     errorDto.Message = "Có lỗi xảy ra...";
                     statusCode = (int)HttpStatusCode.InternalServerError;

@@ -48,6 +48,22 @@ namespace TourAPI.Service
             };
         }
 
+        public async Task<PromotionDto?> GetByCodeAsync(string code)
+        {
+            var promotion = await _promotionRepo.GetByCodeAsync(code); // Lấy khuyến mãi theo mã code
+            if (promotion == null)
+            {
+                throw new NotFoundException("Không tìm thấy khuyến mãi");
+            }
+
+            if (promotion.EndDate < DateTime.Now)
+            {
+                throw new BadHttpRequestException("Khuyến mãi đã hết hạn");
+            }
+
+            return promotion.ToPromotionDTO(); // Chuyển đổi và trả về DTO
+        }
+
         public async Task<PromotionDto?> GetByIdAsync(int id)
         {
             var promotion = await _promotionRepo.GetByIdAsync(id); // Lấy khuyến mãi theo ID

@@ -18,6 +18,10 @@ namespace TourAPI.Models
         public DateTime Time {get; set;}
         public int TourScheduleId {get; set;}
         public int CustomerId {get; set;}
+        public string PaymentMethod {get; set;}
+        public int PriceDiscount {get; set;}
+        public int? PromotionId {get; set;}
+        public Promotion? Promotion {get; set;}
         public TourSchedule? TourSchedule {get; set;}
         public Customer? Customer {get;set;}
         public List<BookingDetail> BookingDetails {get;set;} = new List<BookingDetail>();  

@@ -22,6 +22,5 @@ namespace TourAPI.Dtos.Bookings
         // public List<BookingDetail> BookingDetails {get;set;} = new List<BookingDetail>();  
         
         // public List<TourSchedule> BookingDetails {get;set;} = new List<TourSchedule>();  
-
     }
 }
