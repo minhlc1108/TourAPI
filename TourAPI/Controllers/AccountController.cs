@@ -1,106 +1,80 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TourAPI.Dtos.Account;
 using TourAPI.Interfaces.Service;
-using TourAPI.Models;
+using TourAPI.Service;
 
-namespace TourAPI.Controllers
+[ApiController]
+[Route("api/account")]
+public class AccountController : ControllerBase
 {
-    [ApiController]
-    [Route("api/account")]
-    public class AccountController : ControllerBase
+    private readonly IAccountService _accountService;
+
+    public AccountController(IAccountService accountService)
     {
-        private readonly UserManager<Account> _userManager;
-        private readonly ITokenService _tokenService;
-        private readonly SignInManager<Account> _signInManager;
+        _accountService = accountService;
+    }
 
-        public AccountController(UserManager<Account> userManager, ITokenService tokenService, SignInManager<Account> signInManager)
+    [HttpGet("listAccount")]
+    public async Task<IActionResult> GetAccounts()
+    {
+        return await _accountService.GetAccounts();
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);  
+
+        return await _accountService.Login(loginDto);
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState); 
+
+        return await _accountService.Register(registerDto);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAccountById(string id)
+    {
+        var account = await _accountService.GetAccountById(id);
+        if (account == null)
         {
-            _userManager = userManager;
-            _tokenService = tokenService;
-            _signInManager = signInManager;
+            return NotFound(new { message = "Tài khoản không tồn tại!" });
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username.ToLower());
-            if (user == null)
-            {
-                return Unauthorized("Tài khoản không tồn tại!");
-            }
+        return Ok(account);
+    }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user,loginDto.Password,false);
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> UpdateAccount(string id, [FromBody] UpdateAccountDto updateAccountDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-            if(!result.Succeeded)
-                return Unauthorized("Tài khoản hoặc mật khẩu không chính xác!");
+        return await _accountService.UpdateAccount(id, updateAccountDto);
+    }
 
-            return Ok(new AccountResponseDto{
-                UserName = user.UserName,
-                Email = user.Email,
-                Token = _tokenService.CreateToken(user)
-            });
-        }
+    [HttpPut("updateStatus/{id}")]
+    public async Task<IActionResult> UpdateStatus(string id, [FromBody] bool status)
+    {
+        return await _accountService.UpdateStatus(id, status);
+    }
 
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteAccount(string id)
+    {
+        return await _accountService.DeleteAccountAsync(id);
+    }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-                var account = new Account
-                {
-                    UserName = registerDto.Username,
-                    Email = registerDto.Email,
-                    PhoneNumber = registerDto.Phone
-                };
-
-                var customer = new Customer
-                {
-                    Name = registerDto.CustomerName,
-                    Sex = registerDto.CustomerSex,
-                    Address = registerDto.CustomerAddress,
-                    Status = 1
-                };
-
-                var createdAccount = await _userManager.CreateAsync(account, registerDto.Password);
-                if (createdAccount.Succeeded)
-                {
-                    var roleResult = await _userManager.AddToRoleAsync(account, "User");
-                    //   add khách hàng
-
-                    if (roleResult.Succeeded)
-                    {
-                        return Ok(new AccountResponseDto
-                        {
-                            UserName = account.UserName,
-                            Email = account.Email,
-                            Token = _tokenService.CreateToken(account)
-                        });
-                    }
-                    else
-                    {
-                        return StatusCode(500, roleResult.Errors);
-                    }
-                }
-                else
-                {
-                    return StatusCode(500, createdAccount.Errors);
-                }
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e);
-            }
-        }
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] string email)
+    {
+        return await _accountService.ForgotPassword(email);
     }
 }

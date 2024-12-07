@@ -7,7 +7,7 @@ namespace TourAPI.Dtos.Customer
 {
     public class CustomerResultDto
     {
-         public List<CustomerDto> Customers { get; set; }
-         public int Total {get; set;}
+        public List<CustomerDto> Customers { get; set; }
+        public int Total { get; set; }
     }
 }

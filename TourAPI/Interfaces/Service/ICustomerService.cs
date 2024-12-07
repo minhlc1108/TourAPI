@@ -1,6 +1,5 @@
-using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TourAPI.Dtos.Account;
 using TourAPI.Dtos.Category;
@@ -13,9 +12,13 @@ namespace TourAPI.Interfaces.Service
     public interface ICustomerService
     {
         //  Task<PersonalUserResponseDto?> GetByIdAsync(int id);
-         Task<CustomerDto?> GetByIdAsync(int id);
+        Task<CustomerDto?> GetByIdAsync(int id);
 
         Task<CustomerResultDto> GetAllAsync(CustomerQueryObject query);
-         Task<CustomerDto?> UpdateAsync(int id, UpdateCustomerReqDto CustomerDto);
+        Task<CustomerDto?> UpdateAsync(int id, UpdateCustomerReqDto CustomerDto);
+        Task<Customer?> GetCustomerByAccountIdAsync(string accountId);
+        Task<bool> UpdateCustomerAsync(string accountId, UpdateCustomerDto updateCustomerDto);
+        Task<bool> DeleteCustomerAsync(string id);
+        Task<IActionResult> GetCustomers();
     }
 }
