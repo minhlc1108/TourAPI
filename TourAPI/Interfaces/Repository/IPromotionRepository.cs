@@ -24,5 +24,7 @@ namespace TourAPI.Interfaces.Repository
 
         // Phương thức xóa khuyến mãi theo ID
         Task<Promotion?> DeleteById(int id);
+
+        Task<Promotion?> GetByCodeAsync(string code);
     }
 }

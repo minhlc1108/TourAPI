@@ -35,6 +35,13 @@ namespace TourAPI.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Promotion>()
+                .HasKey(p => p.Id);
+
+            builder.Entity<Promotion>()
+                .HasIndex(p => p.Code)
+                .IsUnique(true);
+
             builder.Entity<Customer>()
                 .HasOne(c => c.Account)
                 .WithOne()

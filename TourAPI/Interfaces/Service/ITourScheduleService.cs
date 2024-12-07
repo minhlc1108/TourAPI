@@ -10,9 +10,10 @@ namespace TourAPI.Interfaces.Service
 {
     public interface ITourScheduleService
     {
-        Task<TourScheduleResultDto> GetByTourId(int tourId, TourScheduleQueryObject queryObject);
+        Task<TourScheduleResultDto> GetTourSchedules(TourScheduleQueryObject queryObject);
         Task<TourScheduleResponseDto> CreateAsync(CreateTourScheduleRequestDto requestDto);
         Task<TourScheduleResponseDto> UpdateAsync(int id, UpdateTourScheduleReqDto requestDto);
         Task<TourScheduleResponseDto> DeleteAsync(int id);
+        Task<TourScheduleDto?> GetByIdAsync(int id);
     }
 }

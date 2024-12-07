@@ -88,6 +88,12 @@ namespace TourAPI.Repository
             return (pagedPromotions, totalCount);
         }
 
+        public async Task<Promotion?> GetByCodeAsync(string code)
+        {
+            return await _context.Promotions
+                .FirstOrDefaultAsync(p => p.Code == code && p.Status == 1);
+        }
+
         public async Task<Promotion?> GetByIdAsync(int id)
         {
             return await _context.Promotions

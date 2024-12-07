@@ -14,5 +14,6 @@ namespace TourAPI.Interfaces.Service
         Task<PromotionDto> CreateAsync(CreatePromotionReqDto promotionDto); // Tạo mới khuyến mãi
         Task<PromotionDto?> UpdateAsync(int id, UpdatePromotionReqDto promotionDto); // Cập nhật khuyến mãi
         Task<PromotionDto?> DeleteById(int id); // Xóa khuyến mãi theo ID
+        Task<PromotionDto?> GetByCodeAsync(string code); // Lấy khuyến mãi theo mã code
     }
 }
