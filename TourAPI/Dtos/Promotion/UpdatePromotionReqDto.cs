@@ -14,7 +14,10 @@ namespace TourAPI.Dtos.Promotion
         
         [Range(0, 100, ErrorMessage = "Phần trăm giảm giá phải từ 0 đến 100")]
         public int Percentage { get; set; }
-
+        
+        [Required(ErrorMessage = "Code khuyến mãi không được để trống")]
+        [MaxLength(255, ErrorMessage = "Code khuyến mãi không được vượt quá 255 ký tự")]
+      
         public string Code { get; set; }
         
         [Required(ErrorMessage = "Ngày bắt đầu không được để trống")]
