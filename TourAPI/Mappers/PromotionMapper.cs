@@ -18,7 +18,9 @@ namespace TourAPI.Mappers
                 Percentage = promotionModel.Percentage,
                 StartDate = promotionModel.StartDate,
                 EndDate = promotionModel.EndDate,
-                Status = promotionModel.Status
+                Status = promotionModel.Status,
+                Code = promotionModel.Code,
+
             };
         }
 
@@ -31,7 +33,9 @@ namespace TourAPI.Mappers
                 Percentage = promotionDto.Percentage,
                 StartDate = promotionDto.StartDate,
                 EndDate = promotionDto.EndDate,
-                Status = promotionDto.Status
+                Status = promotionDto.Status,
+                Code = promotionDto.Code
+                
             };
         }
 
@@ -44,7 +48,9 @@ namespace TourAPI.Mappers
                 Percentage = promotionDto.Percentage,
                 StartDate = promotionDto.StartDate,
                 EndDate = promotionDto.EndDate,
-                Status = promotionDto.Status
+                Status = promotionDto.Status,
+                Code = promotionDto.Code,
+
             };
         }
     }

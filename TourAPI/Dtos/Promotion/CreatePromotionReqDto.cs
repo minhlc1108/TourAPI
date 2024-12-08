@@ -18,6 +18,9 @@ namespace TourAPI.Dtos.Promotion
         [Required(ErrorMessage = "Ngày bắt đầu không được để trống")]
         public DateTime StartDate { get; set; }
 
+        public string Code { get; set; }
+
+
         [Required(ErrorMessage = "Ngày kết thúc không được để trống")]
         public DateTime EndDate { get; set; }
 
