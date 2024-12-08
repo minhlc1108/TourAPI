@@ -126,6 +126,17 @@ namespace TourAPI.Repository
             return (pagedTourSchedules, totalCount);
         }
 
+        public async Task IncreaseAvailableSlot(int tourScheduleId, int customerCount)
+        {
+            var tourSchedule = await _context.TourSchedules.FirstOrDefaultAsync(ts => ts.Id == tourScheduleId);
+            if (tourSchedule == null)
+            {
+                throw new NotFoundException("Không tìm thấy lịch trình tour");
+            }
+            tourSchedule.Remain += customerCount;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<TourSchedule> UpdateAsync(TourSchedule tourSchedule)
         {
             _context.TourSchedules.Update(tourSchedule);

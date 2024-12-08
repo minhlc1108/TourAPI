@@ -16,5 +16,6 @@ namespace TourAPI.Interfaces.Repository
         Task<TourSchedule?> DeleteAsync(int id);
         Task<bool> CheckAvailable(int tourScheduleId, int customerCount);
         Task<TourSchedule?> GetTourScheduleAsync(int id);
+        Task IncreaseAvailableSlot(int tourScheduleId, int customerCount);
     }
 }

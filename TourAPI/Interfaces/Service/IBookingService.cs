@@ -11,5 +11,7 @@ namespace TourAPI.Interfaces.Service
         Task<BookingDto> CreateBookingAsync(CreateBookingReqDto createBookingReqDto);
         Task<BookingResDto> GetBookingDetailsAsync(int id);
         Task updateBookingStatus(int bookingId, int status);
+        Task UpdateExpiredBookingStatusAsync();
+        Task CheckBeforeCreatePayment(int bookingId);
     }
 }

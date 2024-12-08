@@ -31,6 +31,17 @@ namespace TourAPI.Repository
             return await _context.Bookings.Include(b => b.BookingDetails).ThenInclude(bd => bd.Customer).FirstOrDefaultAsync(b => b.Id == id);
         }
 
+        public async Task<List<Booking>> GetExpiredBookingsAsync()
+        {
+            return await _context.Bookings.Where(b => b.Status == 0 && DateTime.Now >= b.Time.AddHours(8)).ToListAsync();
+        }
+
+        public Task UpdateBookingsAsync(List<Booking> bookings)
+        {
+            _context.Bookings.UpdateRange(bookings);
+            return _context.SaveChangesAsync();
+        }
+
         public async Task updateBookingStatus(int bookingId, int status)
         {
             var booking = _context.Bookings.FirstOrDefault(b => b.Id == bookingId);

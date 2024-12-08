@@ -11,7 +11,6 @@ namespace TourAPI.Service
     public class VNPayService : IVNPayService
     {
         private readonly IConfiguration _config;
-
         public VNPayService(IConfiguration config)
         {
             _config = config;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TourAPI.Dtos.Bookings;
+using TourAPI.Exceptions;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
 using TourAPI.Mappers;
@@ -124,6 +125,33 @@ namespace TourAPI.Service
         public async Task updateBookingStatus(int bookingId, int status)
         {
             await _bookingRepository.updateBookingStatus(bookingId, status);
+        }
+
+        public async Task UpdateExpiredBookingStatusAsync()
+        {
+            var expiredBookings = await _bookingRepository.GetExpiredBookingsAsync();
+            foreach (var booking in expiredBookings)
+            {
+                booking.Status = 2;
+                await _tourScheduleRepository.IncreaseAvailableSlot(booking.TourScheduleId, booking.BookingDetails.Count);
+            }
+            await _bookingRepository.UpdateBookingsAsync(expiredBookings);
+        }
+
+        public async Task CheckBeforeCreatePayment(int bookingId)
+        {
+            var booking = await _bookingRepository.GetByIdAsync(bookingId);
+            if (booking == null)
+            {
+                throw new NotFoundException("Không tìm thấy booking");
+            }
+            switch(booking.Status)
+            {
+                case 1:
+                    throw new BadHttpRequestException("Booking đã thanh toán");
+                case 2:
+                    throw new BadHttpRequestException("Booking đã bị hủy");
+            }
         }
     }
 }

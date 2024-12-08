@@ -66,5 +66,11 @@ namespace TourAPI.Controllers
                 return Redirect("http://localhost:5173/payment-booking/" + result.OrderId + "+?error=true");
             }
         }
+
+        [HttpGet("check-before-create-payment/{id}")]
+        public async Task<IActionResult> CheckBeforeCreatePayment([FromRoute] int id) {
+            await _bookingService.CheckBeforeCreatePayment(id);
+            return Ok();
+        }
     }
 }
