@@ -23,8 +23,28 @@ namespace TourAPI.Mappers
                 TourSchedule = booking.TourSchedule?.ToTourScheduleDto(),
 
                 
-                // Tours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
+                // TTours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
             };
         }
+
+        public static Booking ToBookingFromCreateBookingReqDto(this CreateBookingReqDto createBookingReqDto, List<BookingDetail> bookingDetails)
+        {
+
+            return new Booking
+            {
+                TourScheduleId = createBookingReqDto.TourScheduleId,
+                AdultCount = createBookingReqDto.AdultCount,
+                ChildCount = createBookingReqDto.ChildCount,
+                Time = createBookingReqDto.Time,
+                PriceDiscount = createBookingReqDto.PriceDiscount,
+                PromotionId = createBookingReqDto.PromotionId,
+                TotalPrice = createBookingReqDto.TotalPrice,
+                PaymentMethod = createBookingReqDto.PaymentMethod,
+                Status = createBookingReqDto.Status,
+                CustomerId = createBookingReqDto.CustomerId.Value,
+                BookingDetails = bookingDetails
+            };
+            }
+       
     }
 }
