@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TourAPI.Dtos.Booking;
+using TourAPI.Dtos.Bookings;
 using TourAPI.Helpers;
 using TourAPI.Models;
 
@@ -18,5 +20,6 @@ namespace TourAPI.Interfaces.Repository
         Task<Booking?> UpdateAsync(Booking booking);
 
         Task<bool> DeleteByIdAsync(int id);
+        Task<Booking?> UpdateStatusAsync(int id, int status);
     }
 }

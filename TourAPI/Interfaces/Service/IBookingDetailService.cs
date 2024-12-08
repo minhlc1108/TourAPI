@@ -16,5 +16,7 @@ namespace TourAPI.Interfaces.Service
         Task<BookingDetailDto?> UpdateAsync(int id, UpdateBookingDetailReqDto bookingDetailDto);
 
         Task<bool> DeleteByIdAsync(int id);
+        Task<BookingDetailDto> GetByBookingIdAndCustomerIdAsync(int bookingId, int customerId);
+
     }
 }

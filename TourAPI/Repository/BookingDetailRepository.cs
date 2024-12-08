@@ -57,17 +57,36 @@ namespace TourAPI.Repository
             return null;
         }
 
-        public async Task<bool> DeleteByIdAsync(int id)
+        public async Task<bool> DeleteByIdAsync(int bookingId)
         {
-            var bookingDetail = await _context.BookingDetails.FindAsync(id);
+            var bookingDetail = await _context.BookingDetails
+                .Where(bd => bd.BookingId == bookingId)
+                .Include(bd => bd.Customer)
+                .FirstOrDefaultAsync();
             if (bookingDetail == null)
             {
-                return false;
+                return false; 
             }
 
             _context.BookingDetails.Remove(bookingDetail);
             await _context.SaveChangesAsync();
+
             return true;
         }
+
+
+        public async Task<BookingDetail> GetByBookingIdAndCustomerIdAsync(int bookingId, int customerId)
+        {
+            return await _context.BookingDetails
+                .FirstOrDefaultAsync(bd => bd.BookingId == bookingId && bd.CustomerId == customerId);
+        }
+        public async Task<BookingDetail> GetByBookingIdAsync(int bookingId)
+        {
+            return await _context.BookingDetails
+                .Where(bd => bd.BookingId == bookingId) 
+                .Include(bd => bd.Customer) 
+                .FirstOrDefaultAsync(); 
+        }
+
     }
 }

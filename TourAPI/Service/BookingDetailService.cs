@@ -27,22 +27,27 @@ namespace TourAPI.Service
             return createdBookingDetail.ToBookingDetailDto();
         }
 
-        public async Task<bool> DeleteByIdAsync(int id)
+        public async Task<bool> DeleteByIdAsync(int bookingId)
         {
-            var bookingDetail = await _bookingDetailRepo.GetByIdAsync(id);
+            var bookingDetail = await _bookingDetailRepo.GetByBookingIdAsync(bookingId);
 
             if (bookingDetail == null)
             {
                 throw new NotFoundException("BookingDetail not found");
             }
 
-            return await _bookingDetailRepo.DeleteByIdAsync(id);
+            return await _bookingDetailRepo.DeleteByIdAsync(bookingId);
         }
 
         public async Task<List<BookingDetailDto>> GetAllByBookingIdAsync(int bookingId)
         {
             var (bookingDetails, totalCount) = await _bookingDetailRepo.GetAllAsync(bookingId);
             return bookingDetails.Select(bd => bd.ToBookingDetailDto()).ToList();
+        }
+
+        public Task<BookingDetailDto> GetByBookingIdAndCustomerIdAsync(int bookingId, int customerId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<BookingDetailDto?> GetByIdAsync(int id)

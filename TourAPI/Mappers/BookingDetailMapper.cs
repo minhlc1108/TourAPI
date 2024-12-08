@@ -11,14 +11,14 @@ namespace TourAPI.Mappers
             {
                 return null;
             }
-
             return new BookingDetailDto
             {
                 BookingId = bookingDetail.BookingId,
-                CustomerId = bookingDetail.CustomerId,
+                CustomerId = (int)bookingDetail.CustomerId,
                 Price = bookingDetail.Price,
                 Detail = bookingDetail.Detail,
                 Status = bookingDetail.Status,
+                Customer = bookingDetail.Customer,
             };
         }
 

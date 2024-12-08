@@ -10,7 +10,7 @@ namespace TourAPI.Models
     public class BookingDetail
     {
         public int BookingId { get; set; }
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         public int Price { get; set; }
         public string? Detail { get; set; } = String.Empty;
         public int Status { get; set; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TourAPI.Dtos.TourImage;
+using TourAPI.Dtos.TourSchedule;
 
 namespace TourAPI.Dtos.Tour
 {

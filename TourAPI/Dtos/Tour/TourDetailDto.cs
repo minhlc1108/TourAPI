@@ -1,4 +1,7 @@
-﻿namespace TourAPI.Dtos.Tour
+﻿using TourAPI.Dtos.TourSchedule;
+using TourAPI.Models;
+
+namespace TourAPI.Dtos.Tour
 {
     public class TourDetailDto
     {
@@ -9,5 +12,6 @@
         public string Departure { get; set; } = String.Empty;
         public decimal TotalCostForAdult { get; set; }
         public List<TourScheduleDto> Schedules { get; set; }
+        public List<string> Images { get; set; } 
     }
 }

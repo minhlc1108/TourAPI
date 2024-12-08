@@ -19,6 +19,33 @@ namespace TourAPI.Repository
             _context = context;
         }
 
+        public async Task<Customer?> Create(Customer customerModel)
+        {
+            if (customerModel == null)
+            {
+                throw new ArgumentNullException(nameof(customerModel), "Customer model cannot be null.");
+            }
+
+            try
+            {
+                await _context.Customers.AddAsync(customerModel);
+
+                await _context.SaveChangesAsync();
+
+                return customerModel;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating customer: {ex.Message}");
+                throw;
+            }
+        }
+
+        public void Delete(Customer customerModel)
+        {
+            _context.Customers.Remove(customerModel);
+        }
+
         public async Task<(List<Customer>, int totalCount)> GetAllAsync(CustomerQueryObject query)
         {
             // var customers = _context.Customers.AsQueryable();
@@ -26,7 +53,7 @@ namespace TourAPI.Repository
             var customers = _context.Customers
                     .Include(c => c.BookingDetails)
                     .Include(c => c.Bookings)
-                    .Include(c => c.Account) 
+                    .Include(c => c.Account)
                     .AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Name))
             {
@@ -67,10 +94,10 @@ namespace TourAPI.Repository
                 .Include(c => c.BookingDetails)
                 .Include(c => c.Bookings)
                     .ThenInclude(b => b.TourSchedule)
-                        .ThenInclude(ts => ts.Tour ) 
-                            .ThenInclude(t => t.TourImages ) 
+                        .ThenInclude(ts => ts.Tour)
+                            .ThenInclude(t => t.TourImages)
 
-                .Include(c => c.Account) 
+                .Include(c => c.Account)
                 // .Include(c => c.Bookings.Select(v => v.TourSchedule)) 
                 .FirstOrDefaultAsync(t => t.Id == id);
         }

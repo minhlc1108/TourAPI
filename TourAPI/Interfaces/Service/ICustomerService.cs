@@ -17,5 +17,8 @@ namespace TourAPI.Interfaces.Service
 
         Task<CustomerResultDto> GetAllAsync(CustomerQueryObject query);
          Task<CustomerDto?> UpdateAsync(int id, UpdateCustomerReqDto CustomerDto);
+        Task<CustomerDto?> Create(CreateCustomerReqDto customerDto);
+        Task<CustomerDto?> Update(UpdateCustomerReqDto customerDto);
+        Task<bool> Delete(int customerId);
     }
 }

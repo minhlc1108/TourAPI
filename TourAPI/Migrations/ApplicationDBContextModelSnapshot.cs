@@ -269,7 +269,7 @@ namespace TourAPI.Migrations
 
                     b.HasIndex("TourScheduleId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.BookingDetail", b =>
@@ -293,7 +293,7 @@ namespace TourAPI.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("BookingDetails");
+                    b.ToTable("BookingDetails", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.Category", b =>
@@ -318,7 +318,7 @@ namespace TourAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.Customer", b =>
@@ -364,7 +364,7 @@ namespace TourAPI.Migrations
                         .IsUnique()
                         .HasFilter("[RelatedCustomerId] IS NOT NULL");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.Promotion", b =>
@@ -394,7 +394,7 @@ namespace TourAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Promotions");
+                    b.ToTable("Promotions", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.Tour", b =>
@@ -439,7 +439,7 @@ namespace TourAPI.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Tours");
+                    b.ToTable("Tours", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.TourImage", b =>
@@ -460,7 +460,7 @@ namespace TourAPI.Migrations
 
                     b.HasIndex("TourId");
 
-                    b.ToTable("TourImages");
+                    b.ToTable("TourImages", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.TourPromotion", b =>
@@ -475,7 +475,7 @@ namespace TourAPI.Migrations
 
                     b.HasIndex("TourScheduleId");
 
-                    b.ToTable("TourPromotions");
+                    b.ToTable("TourPromotions", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.TourSchedule", b =>
@@ -514,7 +514,7 @@ namespace TourAPI.Migrations
 
                     b.HasIndex("TourId");
 
-                    b.ToTable("TourSchedules");
+                    b.ToTable("TourSchedules", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.Transport", b =>
@@ -549,7 +549,7 @@ namespace TourAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Transports");
+                    b.ToTable("Transports", (string)null);
                 });
 
             modelBuilder.Entity("TourAPI.Models.TransportDetail", b =>
@@ -573,7 +573,7 @@ namespace TourAPI.Migrations
 
                     b.HasIndex("TourScheduleId");
 
-                    b.ToTable("TransportDetails");
+                    b.ToTable("TransportDetails", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

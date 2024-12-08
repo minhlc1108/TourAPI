@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TourAPI.Data;
 using TourAPI.Dtos.Tour;
+using TourAPI.Dtos.TourSchedule;
 using TourAPI.Helpers;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Models;
@@ -123,6 +124,7 @@ namespace TourAPI.Repository
         public async Task<TourDetailDto> GetTourDetail(int id)
         {
             var tour = await _context.Tours
+                .Include(t => t.TourImages) 
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
 
@@ -133,7 +135,6 @@ namespace TourAPI.Repository
                 .Where(ts => ts.TourId == id)
                 .ToListAsync();
 
-
             return new TourDetailDto
             {
                 Id = tour.Id,
@@ -141,6 +142,7 @@ namespace TourAPI.Repository
                 Duration = tour.Duration,
                 Destination = tour.Destination,
                 Departure = tour.Departure,
+                Images = tour.TourImages.Select(ti => ti.Url).ToList(),
                 Schedules = tourSchedules.Select(ts => new TourScheduleDto
                 {
                     Id = ts.Id,
@@ -151,6 +153,7 @@ namespace TourAPI.Repository
                 }).ToList()
             };
         }
+
         public async Task<List<TourDetailDto>> GetAllToursAndToursSchedule()
         {
             var tours = await _context.Tours

@@ -24,10 +24,11 @@ namespace TourAPI.Repository
         public async Task<(List<Booking>, int totalCount)> GetAllAsync(BookingQueryObject query)
         {
             var bookings = _context.Bookings
-        .Include(b => b.Customer)
-        .Include(b => b.TourSchedule)
-        .Include(b => b.BookingDetails)
-        .AsQueryable();
+       .Include(b => b.Customer)
+       .Include(b => b.TourSchedule)
+       .Include(b => b.BookingDetails)
+           .ThenInclude(bd => bd.Customer)
+       .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Id))
             {
@@ -125,5 +126,25 @@ namespace TourAPI.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<Booking?> UpdateStatusAsync(int id, int status)
+        {
+            var booking = await _context.Bookings.FindAsync(id);
+            if (booking == null)
+            {
+                return null;
+            }
+
+            booking.Status = status;
+
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return booking;
+            }
+
+            return null;
+        }
+
     }
 }

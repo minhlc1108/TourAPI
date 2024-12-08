@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,5 +17,8 @@ namespace TourAPI.Interfaces.Repository
         Task<BookingDetail?> UpdateAsync(BookingDetail bookingDetail);
 
         Task<bool> DeleteByIdAsync(int id);
+        Task<BookingDetail> GetByBookingIdAndCustomerIdAsync(int bookingId, int customerId);
+        Task<BookingDetail> GetByBookingIdAsync(int bookingId);
+
     }
 }

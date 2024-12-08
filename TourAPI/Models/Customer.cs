@@ -14,6 +14,10 @@ namespace TourAPI.Models
         [Required]
         [StringLength(255)]
         public string Name { get; set; } = String.Empty;
+        [Required]
+        public string Email { get; set; } = String.Empty;
+        [Required]
+        public string PhoneNumber { get; set; } = String.Empty;
         public int Sex { get; set; }
         [Required]
         [StringLength(255)]

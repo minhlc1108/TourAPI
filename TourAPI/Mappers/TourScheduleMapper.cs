@@ -1,53 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TourAPI.Dtos.Account;
-using TourAPI.Dtos.Category;
-using TourAPI.Dtos.Tour;
+﻿using TourAPI.Dtos.Tour;
+using TourAPI.Dtos.TourSchedule;
 using TourAPI.Models;
 
 namespace TourAPI.Mappers
 {
     public static class TourScheduleMapper
     {
-        public static TourScheduleDto ToTourScheduleDto(this TourSchedule TourSchedule)
+        public static TourScheduleDto ToTourScheduleDTO(this TourSchedule tourScheduleModel)
         {
             return new TourScheduleDto
             {
-                Id = TourSchedule.Id,
-                Name  = TourSchedule.Name,
-                DepartureDate = TourSchedule.DepartureDate,
-                ReturnDate = TourSchedule.ReturnDate,
-                Remain = TourSchedule.Remain,
-                PriceAdult = TourSchedule.PriceAdult,
-                PriceChild = TourSchedule.PriceChild,
-                Status = TourSchedule.Status,
-                TourId = TourSchedule.TourId,
-                Tour = TourSchedule.Tour?.ToTourDTO(),
-
-                
-                // Tours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
-            };
-        }
-
-        public static TourScheduleDto ToTourScheduleFromTourDto(this TourSchedule TourSchedule)
-        {
-            return new TourScheduleDto
-            {
-                Id = TourSchedule.Id,
-                Name  = TourSchedule.Name,
-                DepartureDate = TourSchedule.DepartureDate,
-                ReturnDate = TourSchedule.ReturnDate,
-                Remain = TourSchedule.Remain,
-                PriceAdult = TourSchedule.PriceAdult,
-                PriceChild = TourSchedule.PriceChild,
-                Status = TourSchedule.Status,
-                TourId = TourSchedule.TourId,
-                // Tour = TourSchedule.Tour?.ToTourDTO(),
-
-                
-                // Tours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
+                Id = tourScheduleModel.Id,
+                Name = tourScheduleModel.Name ?? string.Empty,
+                DepartureDate = tourScheduleModel.DepartureDate,
+                ReturnDate = tourScheduleModel.ReturnDate,
+                Remain = tourScheduleModel.Remain,
+                PriceAdult = tourScheduleModel.PriceAdult,
+                PriceChild = tourScheduleModel.PriceChild,
+                Status = tourScheduleModel.Status,
+                TourId = tourScheduleModel.TourId,
+                TourPromotions = tourScheduleModel.TourPromotions ?? new List<TourPromotion>(), 
+                TransportDetails = tourScheduleModel.TransportDetails ?? new List<TransportDetail>() 
             };
         }
     }

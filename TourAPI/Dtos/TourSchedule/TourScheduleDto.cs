@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TourAPI.Dtos.TourImage;
+﻿using TourAPI.Models;
 
-namespace TourAPI.Dtos.Tour
+namespace TourAPI.Dtos.TourSchedule
 {
     public class TourScheduleDto
     {
@@ -17,8 +13,7 @@ namespace TourAPI.Dtos.Tour
         public int PriceChild { get; set; }
         public int Status { get; set; } = 1;
         public int TourId { get; set; }
-        public TourDto? Tour { get; set; }
-
+        public List<TourPromotion> TourPromotions { get; set; } = new List<TourPromotion>();
+        public List<TransportDetail> TransportDetails { get; set; } = new List<TransportDetail>();
     }
-
 }

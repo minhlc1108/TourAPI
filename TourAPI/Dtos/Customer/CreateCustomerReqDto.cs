@@ -1,23 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TourAPI.Dtos.Customer
 {
-    public class UpdateCustomerReqDto
+    public class CreateCustomerReqDto
     {
-        [Required]
-        public int Id { get; set; }
         [Required]
         [StringLength(255)]
         public string Name { get; set; }
+
         [Required]
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-
         [Required]
         public int Sex { get; set; }
 
@@ -28,9 +22,5 @@ namespace TourAPI.Dtos.Customer
         [Required]
         public DateTime Birthday { get; set; }
 
-
-        [Required]
-        [StringLength(255)]
-        public string Password { get; set; }
     }
 }
