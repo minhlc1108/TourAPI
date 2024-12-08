@@ -99,12 +99,6 @@ namespace TourAPI.Service
                     return new BadRequestObjectResult(new { message = "Email đã được sử dụng." });
                 }
 
-                var existingAccountByPhone = await _accountRepository.GetAccountByPhoneAsync(registerDto.Phone);
-                if (existingAccountByPhone != null)
-                {
-                    return new BadRequestObjectResult(new { message = "Số điện thoại đã được sử dụng." });
-                }
-
                 var account = new Account
                 {
                     UserName = registerDto.Username,
@@ -178,6 +172,13 @@ namespace TourAPI.Service
                 Console.WriteLine("Không tìm thấy tài khoản với ID:", id);
                 return new NotFoundObjectResult(new { message = "Không tìm thấy tài khoản!" });
             }
+
+               var existingAccountByEmail = await _accountRepository.GetAccountByEmailAsync(updateAccountDto.Email);
+                if (existingAccountByEmail != null && existingAccountByEmail.Id != id)
+                {
+                    return new BadRequestObjectResult(new { message = "Email đã được sử dụng." });
+                }
+
 
             account.UserName = updateAccountDto.UserName;
             account.Email = updateAccountDto.Email;
