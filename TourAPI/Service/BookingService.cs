@@ -133,7 +133,7 @@ namespace TourAPI.Service
             foreach (var booking in expiredBookings)
             {
                 booking.Status = 2;
-                await _tourScheduleRepository.IncreaseAvailableSlot(booking.TourScheduleId, booking.BookingDetails.Count);
+                await _tourScheduleRepository.IncreaseAvailableSlot(booking.TourScheduleId, booking.AdultCount + booking.ChildCount);
             }
             await _bookingRepository.UpdateBookingsAsync(expiredBookings);
         }
