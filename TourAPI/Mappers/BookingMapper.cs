@@ -6,8 +6,7 @@ namespace TourAPI.Mappers
 {
     public static class BookingMapper
     {
-
-        public static BookingDto ToBookingResultDto(this Booking booking)
+         public static BookingDto ToBookingResultDto(this Booking booking)
         {
             if (booking == null)
             {
@@ -24,6 +23,7 @@ namespace TourAPI.Mappers
                 Time = booking.Time,
                 TourScheduleId = booking.TourScheduleId,
                 CustomerId = booking.CustomerId,
+                // TourSchedule = booking.TourSchedule?.ToTourScheduleDto(),
                 Customer = booking.Customer,
                 TourSchedule = booking.TourSchedule,
                 BookingDetails = booking.BookingDetails?.Select(bd => bd.ToBookingDetailDto()).ToList()

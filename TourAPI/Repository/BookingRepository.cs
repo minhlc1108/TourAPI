@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TourAPI.Data;
+using TourAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using TourAPI.Dtos.Booking;
 using TourAPI.Helpers;
@@ -14,13 +16,20 @@ namespace TourAPI.Repository
 {
     public class BookingRepository : IBookingRepository
     {
-        private readonly ApplicationDBContext _context;
+         private readonly ApplicationDBContext _context;
 
         public BookingRepository(ApplicationDBContext context)
         {
             _context = context;
         }
+         public async Task<Booking> CreateAsync(Booking booking)
+        {
+            await _context.Bookings.AddAsync(booking);
+            await _context.SaveChangesAsync();
+            return booking;
+        }
 
+        
         public async Task<(List<Booking>, int totalCount)> GetAllAsync(BookingQueryObject query)
         {
             var bookings = _context.Bookings
@@ -86,20 +95,48 @@ namespace TourAPI.Repository
             var pagedBookings = await bookings.ToListAsync();
             return (pagedBookings, totalCount);
         }
-
+        
         public async Task<Booking?> GetByIdAsync(int id)
         {
-            return await _context.Bookings
-                .FirstOrDefaultAsync(b => b.Id == id);
+            return await _context.Bookings.Include(b => b.BookingDetails).ThenInclude(bd => bd.Customer).FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public async Task<Booking> CreateAsync(Booking booking)
+      
+
+        public async Task<List<Booking>> GetExpiredBookingsAsync()
         {
-            await _context.Bookings.AddAsync(booking);
-            await _context.SaveChangesAsync();
-            return booking;
+            return await _context.Bookings.Where(b => b.Status == 0 && DateTime.Now >= b.Time.AddHours(8)).ToListAsync();
         }
 
+        public Task UpdateBookingsAsync(List<Booking> bookings)
+        {
+            _context.Bookings.UpdateRange(bookings);
+            return _context.SaveChangesAsync();
+        }
+        
+        public async Task updateBookingStatus(int bookingId, int status)
+        {
+            var booking = _context.Bookings.FirstOrDefault(b => b.Id == bookingId);
+            if (booking == null)
+            {
+                throw new NotFoundException("Không tìm thấy booking");
+            }
+            booking.Status = status;
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+        }
+         public async Task<bool> DeleteByIdAsync(int id)
+        {
+            var booking = await _context.Bookings.FindAsync(id);
+            if (booking == null)
+            {
+                return false;
+            }
+
+            _context.Bookings.Remove(booking);
+            await _context.SaveChangesAsync();
+            return true;
+        }
         public async Task<Booking?> UpdateAsync(Booking booking)
         {
             _context.Bookings.Update(booking);
@@ -113,17 +150,5 @@ namespace TourAPI.Repository
             return null;
         }
 
-        public async Task<bool> DeleteByIdAsync(int id)
-        {
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking == null)
-            {
-                return false;
-            }
-
-            _context.Bookings.Remove(booking);
-            await _context.SaveChangesAsync();
-            return true;
-        }
     }
 }

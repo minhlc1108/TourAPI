@@ -12,6 +12,7 @@ namespace TourAPI.Mappers
 {
     public static class TourScheduleMapper
     {
+                   
         public static TourScheduleDto ToTourScheduleDto(this TourSchedule TourSchedule)
         {
             return new TourScheduleDto

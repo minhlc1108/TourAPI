@@ -20,6 +20,22 @@ namespace TourAPI.Repository
             _context = context;
         }
 
+        public async Task<bool> CheckAvailable(int tourScheduleId, int customerCount)
+        {
+            var tourSchedule = await GetByIdAsync(tourScheduleId);
+            if(tourSchedule == null)
+            {
+                throw new NotFoundException("Không tìm thấy lịch trình tour");
+            }
+            tourSchedule.Remain -= customerCount;
+            if (tourSchedule.Remain < 0)
+            {
+                return false;
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<TourSchedule> CreateAsync(TourSchedule tourSchedule)
         {
             await _context.TourSchedules.AddAsync(tourSchedule);
@@ -41,7 +57,17 @@ namespace TourAPI.Repository
 
         public async Task<TourSchedule?> GetByIdAsync(int id)
         {
-            return await _context.TourSchedules.FirstOrDefaultAsync(ts => ts.Id == id);
+           return await _context.TourSchedules.Include(ts => ts.Tour).ThenInclude(t => t.TourImages).FirstOrDefaultAsync(ts => ts.Id == id && ts.Status == 1);
+        }
+
+        public async Task<TourSchedule?> GetTourScheduleAsync(int id)
+        {
+            return await _context.TourSchedules.Include(ts => ts.Tour).ThenInclude(t => t.TourImages).FirstOrDefaultAsync(ts => ts.Id == id);
+        }
+
+        public async Task<TourSchedule?> GetTourScheduleAsync(int id)
+        {
+            return await _context.TourSchedules.Include(ts => ts.Tour).ThenInclude(t => t.TourImages).FirstOrDefaultAsync(ts => ts.Id == id);
         }
 
         public async Task<(List<TourSchedule>, int total)> GetByTourId(int tourId, TourScheduleQueryObject queryObject)
@@ -103,11 +129,27 @@ namespace TourAPI.Repository
             return (pagedTourSchedules, totalCount);
         }
 
+        public async Task IncreaseAvailableSlot(int tourScheduleId, int customerCount)
+        {
+            var tourSchedule = await _context.TourSchedules.FirstOrDefaultAsync(ts => ts.Id == tourScheduleId);
+            if (tourSchedule == null)
+            {
+                throw new NotFoundException("Không tìm thấy lịch trình tour");
+            }
+            tourSchedule.Remain += customerCount;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<TourSchedule> UpdateAsync(TourSchedule tourSchedule)
         {
             _context.TourSchedules.Update(tourSchedule);
             await _context.SaveChangesAsync();
             return tourSchedule;
+        }
+
+        public Task<(List<TourSchedule>, int total)> GetTourSchedules(TourScheduleQueryObject queryObject)
+        {
+            throw new NotImplementedException();
         }
     }
 }

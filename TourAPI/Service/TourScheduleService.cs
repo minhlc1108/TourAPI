@@ -28,7 +28,7 @@ namespace TourAPI.Service
             var tour = await _tourRepository.GetByIdAsync(requestDto.TourId);
             if (tour == null)
             {
-                throw new NotFoundException("Tour not found");
+                throw new NotFoundException("Không tìm thấy tour");
             }
 
             if (tour.TourSchedules.Any(ts => ts.DepartureDate == requestDto.DepartureDate))
@@ -47,12 +47,34 @@ namespace TourAPI.Service
             var tourSchedule = await _tourScheduleRepository.DeleteAsync(id);
             if (tourSchedule == null)
             {
-                throw new NotFoundException("Tour schedule not found");
+                throw new NotFoundException("Không tìm thấy lịch khởi hành");
             }
             return tourSchedule.ToTourScheduleResponseDto();
         }
 
-        public async Task<TourScheduleResultDto> GetByTourId(int tourId, TourScheduleQueryObject queryObject)
+        public async Task<TourScheduleDto?> GetByIdAsync(int id)
+        {
+            var tourSchedule = await _tourScheduleRepository.GetByIdAsync(id);
+            if(tourSchedule == null) {
+                throw new NotFoundException("Không tìm thấy lịch khởi hành");
+            }
+            if(tourSchedule.DepartureDate < DateTime.Now) {
+                throw new InvalidOperationException("Không thể xem thông tin lịch khởi hành đã qua");
+            }
+            return tourSchedule.ToTourScheduleDto();
+        }
+
+        public async Task<TourScheduleResultDto> GetTourSchedules(TourScheduleQueryObject queryObject)
+        {
+            var (tourSchedules, total) = await _tourScheduleRepository.GetByTourId(tourId, queryObject);
+            return new TourScheduleResultDto
+            {
+                TourSchedules = tourSchedules.Select(t => t.ToTourScheduleResponseDto()).ToList(),
+                Total = total
+            };
+        }
+
+         public async Task<TourScheduleResultDto> GetByTourId(int tourId, TourScheduleQueryObject queryObject)
         {
             var (tourSchedules, total) = await _tourScheduleRepository.GetByTourId(tourId, queryObject);
             return new TourScheduleResultDto
@@ -67,7 +89,7 @@ namespace TourAPI.Service
             var tourSchedule = await _tourScheduleRepository.GetByIdAsync(id);
             if (tourSchedule == null)
             {
-                throw new NotFoundException("Tour schedule not found");
+                throw new NotFoundException("Không tìm thấy lịch khởi hành");
             }
 
             tourSchedule.Name = requestDto.Name;

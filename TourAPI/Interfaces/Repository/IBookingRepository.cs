@@ -18,5 +18,8 @@ namespace TourAPI.Interfaces.Repository
         Task<Booking?> UpdateAsync(Booking booking);
 
         Task<bool> DeleteByIdAsync(int id);
+        Task updateBookingStatus(int bookingId, int status);
+        Task<List<Booking>> GetExpiredBookingsAsync();
+        Task UpdateBookingsAsync(List<Booking> bookings);
     }
 }
