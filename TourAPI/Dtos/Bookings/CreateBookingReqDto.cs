@@ -29,7 +29,7 @@ namespace TourAPI.Dtos.Bookings
         [Required]
         public int ChildCount {get; set;}
         public DateTime Time {get; set;} = DateTime.Now;
-        public int? PriceDiscount {get; set;}
+        public int PriceDiscount {get; set;} = 0;
         public int? PromotionId {get; set;}
         public int TotalPrice {get; set;}
         public string PaymentMethod {get; set;}

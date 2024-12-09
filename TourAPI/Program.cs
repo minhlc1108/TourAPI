@@ -133,13 +133,14 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddHostedService<BookingStatusUpdateService>();
 
 builder.Services.AddScoped<IBookingDetailService, BookingDetailService>();
 builder.Services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddSingleton<CloudinaryService>();
-
+builder.Services.AddSingleton<IVNPayService, VNPayService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

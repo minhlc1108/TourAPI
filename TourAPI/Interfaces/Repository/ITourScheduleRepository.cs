@@ -10,9 +10,12 @@ namespace TourAPI.Interfaces.Repository
     public interface ITourScheduleRepository
     {
         Task<(List<TourSchedule>, int total)> GetTourSchedules(TourScheduleQueryObject queryObject);
-         Task<TourSchedule?> GetByIdAsync(int id);
+        Task<TourSchedule?> GetByIdAsync(int id);
         Task<TourSchedule> CreateAsync(TourSchedule tourSchedule);
         Task<TourSchedule> UpdateAsync(TourSchedule tourSchedule);
         Task<TourSchedule?> DeleteAsync(int id);
+        Task<bool> CheckAvailable(int tourScheduleId, int customerCount);
+        Task<TourSchedule?> GetTourScheduleAsync(int id);
+        Task IncreaseAvailableSlot(int tourScheduleId, int customerCount);
     }
 }
