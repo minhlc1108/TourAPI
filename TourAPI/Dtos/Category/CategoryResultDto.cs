@@ -7,7 +7,7 @@ namespace TourAPI.Dtos.Category
 {
     public class CategoryResultDto
     {
-         public List<CategoryDto> Categories { get; set; }
-         public int Total {get; set;}
+        public List<CategoryDto> Categories { get; set; }
+         public int Total {get; set;} 
     }
 }

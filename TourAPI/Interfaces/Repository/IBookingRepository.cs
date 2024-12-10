@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TourAPI.Helpers;
 using TourAPI.Models;
 
 namespace TourAPI.Interfaces.Repository
@@ -12,6 +13,8 @@ namespace TourAPI.Interfaces.Repository
         Task<Booking?> GetByIdAsync(int id);
         Task updateBookingStatus(int bookingId, int status);
         Task<List<Booking>> GetExpiredBookingsAsync();
+        Task<(List<Booking>, int totalCount)> GetAllAsync(BookingQueryObject queryObject);
         Task UpdateBookingsAsync(List<Booking> bookings);
+        Task DeleteByIdAsync(Booking booking);
     }
 }

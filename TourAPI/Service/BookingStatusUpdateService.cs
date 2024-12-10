@@ -9,7 +9,7 @@ namespace TourAPI.Service
     public class BookingStatusUpdateService : BackgroundService
     {
          private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly TimeSpan _interval = TimeSpan.FromHours(1);
+        private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
         public BookingStatusUpdateService(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
