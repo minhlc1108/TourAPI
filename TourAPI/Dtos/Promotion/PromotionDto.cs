@@ -11,6 +11,7 @@ namespace TourAPI.Dtos.Promotion
         public int Id { get; set; }
         public string? Name { get; set; } // Thêm dấu hỏi (?) để đồng bộ với kiểu nullable trong Promotion.cs
         public int Percentage { get; set; }
+        public string Code { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int Status { get; set; } = 1;

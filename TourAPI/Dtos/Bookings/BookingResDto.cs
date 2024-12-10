@@ -14,6 +14,8 @@ namespace TourAPI.Dtos.Bookings
 
         public int TotalPrice { get; set; }
         public int PriceDiscount { get; set; }
+        public int AdultCount { get; set; }
+        public int ChildCount { get; set; }
         public string PaymentMethod { get; set; }
         public TourScheduleDto TourSchedule { get; set; }
         public OrdererDto Customer { get; set; }

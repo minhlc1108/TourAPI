@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using TourAPI.Dtos.Bookings;
 using TourAPI.Exceptions;
+using TourAPI.Helpers;
+using TourAPI.Interfaces;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
 using TourAPI.Mappers;
@@ -17,12 +20,14 @@ namespace TourAPI.Service
         private readonly ICustomerRepository _customerRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly ITourScheduleRepository _tourScheduleRepository;
-        public BookingService(IBookingRepository bookingRepository, ICustomerRepository customerRepository, IAccountRepository accountRepository, ITourScheduleRepository tourScheduleRepository)
+        private readonly IEmailSender _emailSender;
+        public BookingService(IBookingRepository bookingRepository, ICustomerRepository customerRepository, IAccountRepository accountRepository, ITourScheduleRepository tourScheduleRepository, IEmailSender emailSender)
         {
             _bookingRepository = bookingRepository;
             _customerRepository = customerRepository;
             _accountRepository = accountRepository;
             _tourScheduleRepository = tourScheduleRepository;
+            _emailSender = emailSender;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingReqDto createBookingReqDto)
@@ -84,6 +89,11 @@ namespace TourAPI.Service
             var booking = createBookingReqDto.ToBookingFromCreateBookingReqDto(bookingDetails);
 
             await _bookingRepository.CreateAsync(booking);
+
+            var subject = "Đơn xác nhận booking";
+            var message = $"Cảm ơn bạn đã đặt tour! <br> Đây là chi tiết booking của bạn: <strong>http://localhost:5173/payment-booking/{booking.Id}</strong> <br> Vui lòng thanh toán trước thời hạn!";
+            await _emailSender.SendEmailAsync(createBookingReqDto.Email, subject, message);
+
             return booking.ToBookingDTO();
         }
 
@@ -113,6 +123,8 @@ namespace TourAPI.Service
                 TotalPrice = booking.TotalPrice,
                 PriceDiscount = booking.PriceDiscount,
                 Time = booking.Time,
+                AdultCount = booking.AdultCount,
+                ChildCount = booking.ChildCount,
                 TourSchedule = tourSchedule.ToTourScheduleDto(),
                 Customer = orderer.ToOrdererDto(),
                 PaymentMethod = booking.PaymentMethod,
@@ -122,8 +134,16 @@ namespace TourAPI.Service
 
         }
 
-        public async Task updateBookingStatus(int bookingId, int status)
+        public async Task UpdateBookingStatus(int bookingId, int status)
         {
+            if (status == 2)
+            {
+                var booking = await _bookingRepository.GetByIdAsync(bookingId);
+                if(booking == null) {
+                    throw  new NotFoundException("Không tìm thấy booking");
+                }
+                await _tourScheduleRepository.IncreaseAvailableSlot(booking.TourScheduleId, booking.AdultCount + booking.ChildCount);
+            }
             await _bookingRepository.updateBookingStatus(bookingId, status);
         }
 
@@ -145,13 +165,33 @@ namespace TourAPI.Service
             {
                 throw new NotFoundException("Không tìm thấy booking");
             }
-            switch(booking.Status)
+            switch (booking.Status)
             {
                 case 1:
                     throw new BadHttpRequestException("Booking đã thanh toán");
                 case 2:
                     throw new BadHttpRequestException("Booking đã bị hủy");
             }
+        }
+
+        public async Task<BookingResultDto> GetAllAsync(BookingQueryObject queryObject)
+        {
+            var (bookings, totalCount) = await _bookingRepository.GetAllAsync(queryObject);
+            var bookingsDto = bookings.Select(b => b.ToBookingDTO()).ToList();
+            return new BookingResultDto
+            {
+                Bookings = bookingsDto,
+                Total = totalCount
+            };
+        }
+
+        public async Task DeleteBookingAsync(int id)
+        {
+            var booking = await _bookingRepository.GetByIdAsync(id);
+            if(booking == null) {
+                throw new NotFoundException("Không tìm thấy booking");
+            }
+            await _bookingRepository.DeleteByIdAsync(booking);
         }
     }
 }

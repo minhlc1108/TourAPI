@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TourAPI.Dtos.Bookings;
+using TourAPI.Helpers;
 
 namespace TourAPI.Interfaces.Service
 {
@@ -10,8 +11,10 @@ namespace TourAPI.Interfaces.Service
     {
         Task<BookingDto> CreateBookingAsync(CreateBookingReqDto createBookingReqDto);
         Task<BookingResDto> GetBookingDetailsAsync(int id);
-        Task updateBookingStatus(int bookingId, int status);
+        Task<BookingResultDto> GetAllAsync(BookingQueryObject queryObject);
+        Task UpdateBookingStatus(int bookingId, int status);
         Task UpdateExpiredBookingStatusAsync();
         Task CheckBeforeCreatePayment(int bookingId);
+        Task DeleteBookingAsync(int id);
     }
 }
