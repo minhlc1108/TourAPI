@@ -53,6 +53,24 @@ namespace TourAPI.Service
                 Role = await _accountRepository.IsUserAdminAsync(id) ? 1 : 0,
             };
         }
+        
+        //  public async Task<AccountDto> GetAccountByEmail(string email)
+        // {
+        //     var account = await _accountRepository.GetAccountByEmailAsync(email);
+        //     if (account == null)
+        //     {
+        //         return null;
+        //     }
+
+        //     return new AccountDto
+        //     {
+        //         UserName = account.UserName,
+        //         Email = account.Email,
+        //         PhoneNumber = account.PhoneNumber,
+        //         LockoutEnabled = account.LockoutEnabled,
+        //         Role = await _accountRepository.IsUserAdminAsync(id) ? 1 : 0,
+        //     };
+        // }
 
 
         public async Task<IActionResult> Login(LoginDto loginDto)

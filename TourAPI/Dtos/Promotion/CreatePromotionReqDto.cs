@@ -15,6 +15,9 @@ namespace TourAPI.Dtos.Promotion
         [Range(0, 100, ErrorMessage = "Phần trăm giảm giá phải từ 0 đến 100")]
         public int Percentage { get; set; }
 
+         [Required(ErrorMessage = "Code không được để trống")]
+        public string Code { get; set; }
+
         [Required(ErrorMessage = "Ngày bắt đầu không được để trống")]
         public DateTime StartDate { get; set; }
 

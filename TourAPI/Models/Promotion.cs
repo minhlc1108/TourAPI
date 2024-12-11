@@ -18,6 +18,7 @@ namespace TourAPI.Models
         public int Percentage { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        
         public string Code { get; set; }
         public int Status { get; set; } = 1;
         public List<Booking> Bookings { get; set; } = new List<Booking>();
