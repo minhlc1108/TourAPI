@@ -14,5 +14,6 @@ namespace TourAPI.Interfaces.Service
         Task<IActionResult> UpdateStatus(string id, bool status);
         Task<IActionResult> DeleteAccountAsync(string id);
         Task<IActionResult> ForgotPassword(string email);
+        Task<bool> CheckIsAdmin(string email);
     }
 }
