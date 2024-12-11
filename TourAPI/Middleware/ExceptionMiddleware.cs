@@ -44,6 +44,9 @@ namespace TourAPI.Middleware
                 case BadHttpRequestException:
                     statusCode = (int)HttpStatusCode.BadRequest;
                     break;
+                case UnauthorizedException:
+                    statusCode = (int)HttpStatusCode.Unauthorized;
+                    break;
                 default:
                     errorDto.Message = "Có lỗi xảy ra...";
                     statusCode = (int)HttpStatusCode.InternalServerError;

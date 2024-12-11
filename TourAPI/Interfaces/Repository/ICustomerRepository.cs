@@ -9,9 +9,12 @@ namespace TourAPI.Interfaces.Repository
     {
         Task<(List<Customer>, int totalCount)> GetAllAsync(CustomerQueryObject query);
          Task<Customer?> GetByIdAsync(int id);
-        Task<Customer?> UpdateAsync(Customer customerModel);
+         Task<Customer?> UpdateAsync(Customer customerModel);
         Task<Customer?> GetCustomerByIdAsync(int id);
         Task<Customer?> GetCustomerByAccountIdAsync(string accountId);
+        //  Task<Customer?> GetByEmailAsync(string  Email);
+        Task<Customer?> GetCustomerByEmailAsync(string email);
+        
         Task AddCustomerAsync(Customer customer);
         Task<bool> UpdateCustomerAsync(Customer customer);
         Task<bool> DeleteCustomerAsync(string id);

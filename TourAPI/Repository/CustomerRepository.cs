@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using TourAPI.Data;
 using TourAPI.Helpers;
+using TourAPI.Dtos.Customer;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Models;
 
@@ -35,6 +36,22 @@ namespace TourAPI.Repository
                 // .Include(c => c.Bookings.Select(v => v.TourSchedule)) 
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
+
+        //  public async Task<Customer?> GetByEmailAsync(string Email)
+        // {
+        //     return await _context.Customers
+        //         .Include(c => c.BookingDetails)
+        //         .Include(c => c.Bookings)
+        //             .ThenInclude(b => b.TourSchedule)
+        //                 .ThenInclude(ts => ts.Tour)
+        //                     .ThenInclude(t => t.TourImages)
+
+        //         .Include(c => c.Account)
+        //         // .Include(c => c.Bookings.Select(v => v.TourSchedule)) 
+        //         .FirstOrDefaultAsync(t => t.Email == Email);
+        // }
+
+
         public async Task<Customer?> UpdateAsync(Customer customerModel)
         {
             _context.Customers.Update(customerModel);
@@ -50,7 +67,31 @@ namespace TourAPI.Repository
         public async Task<Customer?> GetCustomerByAccountIdAsync(string accountId)
         {
             return await _context.Customers
+                .Include(c => c.BookingDetails)
+                .Include(c => c.Bookings)
+                    .ThenInclude(b => b.TourSchedule)
+                        .ThenInclude(ts => ts.Tour)
+                            .ThenInclude(t => t.TourImages)
+
+                .Include(c => c.Account)
                 .FirstOrDefaultAsync(c => c.AccountId == accountId);
+        }
+        //  public async Task<Customer?> GetByEmailAsync(string Email)
+        // {
+        //     return await _context.Customers
+        //         .FirstOrDefaultAsync(c => c.Email == Email);
+        // }
+        public async Task<Customer?> GetCustomerByEmailAsync(string email)
+        {
+            return await _context.Customers
+            .Include( c=> c.Account)
+            .Include(c => c.BookingDetails)
+                .Include(c => c.Bookings)
+                    .ThenInclude(b => b.TourSchedule)
+                        .ThenInclude(ts => ts.Tour)
+                            .ThenInclude(t => t.TourImages)
+
+                .FirstOrDefaultAsync(c => c.Email == email);
         }
 
         public async Task AddCustomerAsync(Customer customer)

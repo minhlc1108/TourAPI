@@ -14,6 +14,7 @@ namespace TourAPI.Dtos.Promotion
         public string Code { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
         public int Status { get; set; } = 1;
 
         // Optional: Nếu muốn bao gồm thông tin về các TourPromotion

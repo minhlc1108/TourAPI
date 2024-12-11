@@ -9,7 +9,7 @@ using TourAPI.Interfaces;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
 using TourAPI.Models;
-using TourAPI.Repository;
+using TourAPI.Exceptions;
 
 namespace TourAPI.Service
 {
@@ -53,6 +53,24 @@ namespace TourAPI.Service
                 Role = await _accountRepository.IsUserAdminAsync(id) ? 1 : 0,
             };
         }
+        
+        //  public async Task<AccountDto> GetAccountByEmail(string email)
+        // {
+        //     var account = await _accountRepository.GetAccountByEmailAsync(email);
+        //     if (account == null)
+        //     {
+        //         return null;
+        //     }
+
+        //     return new AccountDto
+        //     {
+        //         UserName = account.UserName,
+        //         Email = account.Email,
+        //         PhoneNumber = account.PhoneNumber,
+        //         LockoutEnabled = account.LockoutEnabled,
+        //         Role = await _accountRepository.IsUserAdminAsync(id) ? 1 : 0,
+        //     };
+        // }
 
 
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -60,19 +78,19 @@ namespace TourAPI.Service
             var user = await _accountRepository.GetAccountByUsernameAsync(loginDto.Username);
             if (user == null)
             {
-                return new UnauthorizedObjectResult("Tài khoản không tồn tại!");
+                throw new UnauthorizedException("Tài khoản không tồn tại!");
             }
 
             if (user.LockoutEnabled)
             {
-                return new UnauthorizedObjectResult("Tài khoản đã bị khóa!");
+                throw new UnauthorizedException("Tài khoản đã bị khóa!");
             }
 
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
             if (!result.Succeeded)
             {
-                return new UnauthorizedObjectResult("Tài khoản hoặc mật khẩu không chính xác!");
+                throw new UnauthorizedException("Tài khoản hoặc mật khẩu không chính xác!");
             }
 
             var isAdmin = await _accountRepository.IsUserAdminAsync(user.Id);
