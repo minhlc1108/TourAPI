@@ -21,7 +21,10 @@ namespace TourAPI.Mappers
                 Time = booking.Time,
                 TourScheduleId = booking.TourScheduleId,
                 TourSchedule = booking.TourSchedule?.ToTourScheduleDto(),
-
+                CustomerId = booking.CustomerId,
+                PaymentMethod = booking.PaymentMethod,
+                PriceDiscount = booking.PriceDiscount,
+                PromotionId = booking.PromotionId
                 
                 // TTours = booking.Tours.Select(t => t.ToTourDTO()).ToList()
             };

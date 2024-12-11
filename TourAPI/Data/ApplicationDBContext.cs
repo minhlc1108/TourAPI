@@ -71,8 +71,8 @@ namespace TourAPI.Data
             builder.Entity<BookingDetail>()
                 .HasOne(bd => bd.Booking)
                 .WithMany(b => b.BookingDetails)
-                .HasForeignKey(bd => bd.BookingId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(bd => bd.BookingId)  
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<BookingDetail>()
                 .HasOne(bd => bd.Customer)

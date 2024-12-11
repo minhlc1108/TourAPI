@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TourAPI.Dtos.Customer;
+using TourAPI.Dtos.Promotion;
 using TourAPI.Dtos.Tour;
 using TourAPI.Models;
 
@@ -14,10 +16,13 @@ namespace TourAPI.Dtos.Bookings
         public int TotalPrice {get; set;}
         public int AdultCount {get; set;}
         public int ChildCount {get; set;}
+        public string PaymentMethod {get; set;}
+        public int PriceDiscount {get; set;}
+        public int? PromotionId {get; set;}
         public int Status {get; set;}
         public DateTime Time {get; set;}
         public int TourScheduleId {get; set;}
-        // public int CustomerId {get; set;}
+        public int CustomerId {get; set;}
         public TourScheduleDto? TourSchedule {get; set;}
         // public List<BookingDetail> BookingDetails {get;set;} = new List<BookingDetail>();  
         
