@@ -8,6 +8,7 @@ using TourAPI.Helpers;
 using TourAPI.Models;
 using TourAPI.Dtos.Promotion;
 using TourAPI.Interfaces.Service;
+using TourAPI.Data;
 
 namespace TourAPI.Controllers
 {
@@ -15,6 +16,8 @@ namespace TourAPI.Controllers
     [Route("api/promotion")]
     public class PromotionController : ControllerBase
     {
+        private readonly ApplicationDBContext _context;
+
         private readonly IPromotionService _promotionService;
 
         public PromotionController(IPromotionService promotionService)
@@ -44,7 +47,7 @@ namespace TourAPI.Controllers
             var promotionsResultDto = await _promotionService.GetByCodeAsync(code);
             return Ok(promotionsResultDto);
         }
-        
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -64,6 +67,11 @@ namespace TourAPI.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+            if (_context.Promotions.Any(p => p.Code == promotionDto.Code))
+            {
+                ModelState.AddModelError("Code", "Mã code này đã tồn tại.");
+                return BadRequest(ModelState); 
             }
             var createdPromotionDto = await _promotionService.CreateAsync(promotionDto);
             return CreatedAtAction(nameof(GetById), new { id = createdPromotionDto.Id }, createdPromotionDto);
@@ -91,7 +99,7 @@ namespace TourAPI.Controllers
                 return BadRequest(ModelState);
             }
             var promotionDto = await _promotionService.DeleteById(id);
-         
+
             return Ok(promotionDto);
         }
     }
