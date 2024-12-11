@@ -1,3 +1,4 @@
+using TourAPI.Dtos.Bookings;
 using TourAPI.Dtos.Customer;
 using TourAPI.Models;
 
@@ -14,10 +15,10 @@ namespace TourAPI.Mappers
                 Sex = customer.Sex,
                 Address = customer.Address,
                 Birthday = customer.Birthday,
-                Email = customer.Account.Email,
-                PhoneNumber = customer.Account.PhoneNumber,
-                Password = customer.Account.PasswordHash,
-                Bookings = customer.Bookings.Select(t => t.ToBookingDTO()).ToList(),
+                Email = customer.Account?.Email ?? "Unknown",  // Kiểm tra null trước khi truy cập
+                PhoneNumber = customer.Account?.PhoneNumber?? "Unknown",  // Kiểm tra null trước khi truy cập
+                Password = customer.Account?.PasswordHash ?? "Unknown",  // Kiểm tra null trước khi truy cập
+                Bookings = customer.Bookings?.Select(t => t.ToBookingDTO()).ToList() ?? new List<BookingDto>(), // Kiểm tra null trước khi truy cập
                 Status = customer.Status,
 
             };

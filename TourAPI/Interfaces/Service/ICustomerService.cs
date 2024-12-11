@@ -13,10 +13,11 @@ namespace TourAPI.Interfaces.Service
     {
         //  Task<PersonalUserResponseDto?> GetByIdAsync(int id);
         Task<CustomerDto?> GetByIdAsync(int id);
-
+        // Task<CustomerDto?>  GetByEmailAsync(string email);
+        Task<CustomerDto?> GetByEmailAsync(string email);
         Task<CustomerResultDto> GetAllAsync(CustomerQueryObject query);
         Task<CustomerDto?> UpdateAsync(int id, UpdateCustomerReqDto CustomerDto);
-        Task<Customer?> GetCustomerByAccountIdAsync(string accountId);
+        Task<CustomerDto?> GetCustomerByAccountIdAsync(string accountId);
         Task<bool> UpdateCustomerAsync(string accountId, UpdateCustomerDto updateCustomerDto);
         Task<bool> DeleteCustomerAsync(string id);
         Task<IActionResult> GetCustomers();

@@ -32,6 +32,30 @@ public class CustomerController : ControllerBase
         var customer = await _customerService.GetCustomerByAccountIdAsync(id);
         return Ok(customer);
     }
+[HttpGet("email/{email}")]
+public async Task<IActionResult> GetCustomerByEmail([FromRoute] string email)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);
+    }
+
+    try
+    {
+        var customerDto = await _customerService.GetByEmailAsync(email);
+        if (customerDto == null)
+        {
+            return NotFound($"No customer found with email: {email}");
+        }
+        return Ok(customerDto);
+    }
+    catch (Exception ex)
+    {
+        // Xử lý lỗi ở đây
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+    }
+}
+
 
     [HttpPut("update/{id}")]
     public async Task<IActionResult> UpdateCustomer(string id, [FromBody] UpdateCustomerDto updateCustomerDto)
