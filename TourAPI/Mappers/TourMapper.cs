@@ -40,5 +40,26 @@ namespace TourAPI.Mappers
                 Status = 1
             };
         }   
+
+        public static TourDetailDto ToTourDetailDto(this Tour tour) {
+          return new TourDetailDto
+            {
+                Id = tour.Id,
+                Name = tour.Name,
+                Duration = tour.Duration,
+                Destination = tour.Destination,
+                Departure = tour.Departure,
+                Images = tour.TourImages.Select(ti => ti.Url).ToList(),
+                Schedules = tour.TourSchedules.Select(ts => new TourScheduleDto
+                {
+                    Id = ts.Id,
+                    DepartureDate = ts.DepartureDate,
+                    ReturnDate = ts.ReturnDate,
+                    PriceAdult = ts.PriceAdult,
+                    PriceChild = ts.PriceChild,
+                    Remain = ts.Remain,
+                }).ToList()
+            };
+        }
     }
 }

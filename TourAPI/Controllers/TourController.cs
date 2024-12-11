@@ -36,6 +36,12 @@ namespace TourAPI.Controllers
             return Ok(tourDto);
         }
 
+        [HttpGet]
+        [Route("get-detail/{id:int}")]
+        public async Task<IActionResult> GetTourDetail([FromRoute] int id)
+        {
+            return Ok(await _tourService.GetTourDetail(id));
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateTourReqDto tourDto)
         {
