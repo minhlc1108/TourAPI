@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TourAPI.Dtos.Account;
+using TourAPI.Exceptions;
 using TourAPI.Interfaces;
 using TourAPI.Interfaces.Repository;
 using TourAPI.Interfaces.Service;
@@ -78,7 +80,7 @@ namespace TourAPI.Service
             {
                 UserName = user.UserName,
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token =  await _tokenService.CreateToken(user),
                 IsAdmin = isAdmin
             });
         }
@@ -126,7 +128,7 @@ namespace TourAPI.Service
                     {
                         UserName = account.UserName,
                         Email = account.Email,
-                        Token = _tokenService.CreateToken(account)
+                        // Token =  await _tokenService.CreateToken(account)
                     });
                 }
                 else
@@ -173,11 +175,11 @@ namespace TourAPI.Service
                 return new NotFoundObjectResult(new { message = "Không tìm thấy tài khoản!" });
             }
 
-               var existingAccountByEmail = await _accountRepository.GetAccountByEmailAsync(updateAccountDto.Email);
-                if (existingAccountByEmail != null && existingAccountByEmail.Id != id)
-                {
-                    return new BadRequestObjectResult(new { message = "Email đã được sử dụng." });
-                }
+            var existingAccountByEmail = await _accountRepository.GetAccountByEmailAsync(updateAccountDto.Email);
+            if (existingAccountByEmail != null && existingAccountByEmail.Id != id)
+            {
+                return new BadRequestObjectResult(new { message = "Email đã được sử dụng." });
+            }
 
 
             account.UserName = updateAccountDto.UserName;
@@ -243,12 +245,12 @@ namespace TourAPI.Service
                 }
                 else
                 {
-                    return new StatusCodeResult(500); 
+                    return new StatusCodeResult(500);
                 }
             }
             catch (Exception ex)
             {
-                return new StatusCodeResult(500); 
+                return new StatusCodeResult(500);
             }
         }
         private string HashPasswordUsingIdentity(string password)
@@ -265,6 +267,16 @@ namespace TourAPI.Service
                                               .Select(_ => validChars[random.Next(validChars.Length)])
                                               .ToArray());
             return password;
+        }
+
+        public async Task<bool> CheckIsAdmin(string email)
+        {
+            var account = await _accountRepository.GetAccountByEmailAsync(email);
+            if (account == null)
+            {
+               throw new NotFoundException("Tài khoản không tồn tại!");
+            }
+            return await _accountRepository.IsUserAdminAsync(account.Id);
         }
     }
 }

@@ -20,7 +20,15 @@ namespace TourAPI.Repository
         public async Task<bool> CreateAccountAsync(Account account, string password)
         {
             var result = await _userManager.CreateAsync(account, password);
-            return result.Succeeded;
+            if (result.Succeeded)
+            {
+                var roleResult = await _userManager.AddToRoleAsync(account, "User");
+                if (roleResult.Succeeded)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task<IEnumerable<dynamic>> GetAllAccountsAsync()
@@ -78,7 +86,7 @@ namespace TourAPI.Repository
             var userRoles = await _context.UserRoles
                 .Where(ur => ur.UserId == id)
                 .ToListAsync();
-                
+
             var adminRole = await _context.Roles
                 .Where(r => r.Name == "Admin")
                 .FirstOrDefaultAsync();
@@ -113,7 +121,7 @@ namespace TourAPI.Repository
 
         public async Task<bool> UpdateUserRolesAsync(Account account, string newRole)
         {
-            var currentRoles = await _userManager.GetRolesAsync(account); 
+            var currentRoles = await _userManager.GetRolesAsync(account);
             if (!currentRoles.Contains(newRole))
             {
                 foreach (var role in currentRoles)

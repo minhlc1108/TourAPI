@@ -108,6 +108,11 @@ builder.Services.AddAuthentication(options =>
         )
     };
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("User", policy => policy.RequireRole("User"));
+});
 
 // Register services
 builder.Services.AddTransient<ExceptionMiddleware>();

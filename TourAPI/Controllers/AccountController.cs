@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourAPI.Dtos.Account;
 using TourAPI.Interfaces.Service;
@@ -25,16 +26,24 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);  
+            return BadRequest(ModelState);
 
         return await _accountService.Login(loginDto);
+    }
+
+    [HttpGet("checkIsAdmin/{email}")]
+    public async Task<IActionResult> CheckIsAdmin(string email)
+    {
+        var result = await _accountService.CheckIsAdmin(email);
+
+        return Ok(result);
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState); 
+            return BadRequest(ModelState);
 
         return await _accountService.Register(registerDto);
     }

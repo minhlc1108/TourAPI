@@ -8,6 +8,6 @@ namespace TourAPI.Interfaces.Service
 {
     public interface ITokenService 
     {
-        string CreateToken(Account account);
+        Task<string> CreateToken(Account account);
     }
 }
