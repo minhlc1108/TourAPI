@@ -72,8 +72,7 @@ namespace TourAPI.Controllers
             // if ( _promotionService.GetByCodeAsync(code)   )
 
             {
-                ModelState.AddModelError("Code", "Mã code này đã tồn tại.");
-                return BadRequest(ModelState); 
+                throw new BadHttpRequestException("Mã code này đã tồn tại.");
             }
             var createdPromotionDto = await _promotionService.CreateAsync(promotionDto);
             return CreatedAtAction(nameof(GetById), new { id = createdPromotionDto.Id }, createdPromotionDto);
@@ -86,6 +85,12 @@ namespace TourAPI.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+            if (await _promotionService.IsCodeExistsAsync(promotionDto.Code))
+            // if ( _promotionService.GetByCodeAsync(code)   )
+
+            {
+                throw new BadHttpRequestException("Mã code này đã tồn tại.");
             }
             var updatedPromotionDto = await _promotionService.UpdateAsync(id, promotionDto);
 
