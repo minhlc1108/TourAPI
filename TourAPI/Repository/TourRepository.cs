@@ -39,7 +39,7 @@ namespace TourAPI.Repository
 
         public async Task<(List<Tour>, int totalCount)> GetAllAsync(TourQueryObject query)
         {
-            var tours = _context.Tours.Include(t => t.Category).Include(t => t.TourImages).Include(t => t.TourSchedules.Where(t=>t.DepartureDate >= DateTime.Today)).AsQueryable();
+            var tours = _context.Tours.Include(t => t.Category).Include(t => t.TourImages).Include(t => t.TourSchedules.Where(t=>t.DepartureDate.AddHours(-8) < DateTime.Today && t.Status == 1)).AsQueryable();
 
 
             if (!string.IsNullOrWhiteSpace(query.Name))
@@ -127,7 +127,7 @@ namespace TourAPI.Repository
 
         public Task<Tour?> GetDetailAsync(int id)
         {
-            return _context.Tours.Include(t => t.TourImages).Include(t => t.TourSchedules.Where(t=>t.DepartureDate >= DateTime.Today)).FirstOrDefaultAsync(t => t.Id == id);
+            return _context.Tours.Include(t => t.TourImages).Include(t => t.TourSchedules.Where(t=>t.DepartureDate.AddHours(-8) > DateTime.Today)).FirstOrDefaultAsync(t => t.Id == id && t.Status == 1);
         }
 
         public async Task<Tour> UpdateAsync(Tour tourModel)

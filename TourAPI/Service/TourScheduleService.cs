@@ -58,8 +58,8 @@ namespace TourAPI.Service
             if(tourSchedule == null) {
                 throw new NotFoundException("Không tìm thấy lịch khởi hành");
             }
-            if(tourSchedule.DepartureDate < DateTime.Now) {
-                throw new InvalidOperationException("Không thể xem thông tin lịch khởi hành đã qua");
+            if(tourSchedule.DepartureDate.AddHours(-8) < DateTime.Now) {
+                throw new InvalidOperationException("Tour đã đóng không thể đặt");
             }
             return tourSchedule.ToTourScheduleDto();
         }

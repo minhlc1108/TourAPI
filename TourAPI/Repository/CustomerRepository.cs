@@ -85,13 +85,14 @@ namespace TourAPI.Repository
         {
             return await _context.Customers
             .Include( c=> c.Account)
-            .Include(c => c.BookingDetails)
-                .Include(c => c.Bookings)
-                    .ThenInclude(b => b.TourSchedule)
-                        .ThenInclude(ts => ts.Tour)
-                            .ThenInclude(t => t.TourImages)
+            .Include(c => c.Bookings)
+                .FirstOrDefaultAsync(c => c.Account.Email == email);
+            // .Include(c => c.BookingDetails)
+            //     .Include(c => c.Bookings)
+            //         .ThenInclude(b => b.TourSchedule)
+            //             .ThenInclude(ts => ts.Tour)
+            //                 .ThenInclude(t => t.TourImages)
 
-                .FirstOrDefaultAsync(c => c.Email == email);
         }
 
         public async Task AddCustomerAsync(Customer customer)

@@ -20,7 +20,6 @@ namespace TourAPI.Mappers
                 Password = customer.Account?.PasswordHash ?? "Unknown",  // Kiểm tra null trước khi truy cập
                 Bookings = customer.Bookings?.Select(t => t.ToBookingDTO()).ToList() ?? new List<BookingDto>(), // Kiểm tra null trước khi truy cập
                 Status = customer.Status,
-
             };
         }
         public static OrdererDto ToOrdererDto(this Customer customer)

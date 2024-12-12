@@ -83,5 +83,11 @@ namespace TourAPI.Service
             }
             return promotionModel.ToPromotionDTO(); // Chuyển đổi model sang DTO và trả về
         }
+         public async Task<bool> IsCodeExistsAsync(string code)
+    {
+        return await _promotionRepo.ExistsByCodeAsync(code);
+    }
+
+        
     }
 }

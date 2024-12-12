@@ -37,17 +37,18 @@ namespace TourAPI.Service
             {
                 throw new BadHttpRequestException("Không còn chỗ trống");
             }
-            var customer = new Customer();
             if (createBookingReqDto.CustomerId == null)
             {
                 var account = await _accountRepository.GetAccountByEmailAsync(createBookingReqDto.Email);
+                var customer = new Customer();
                 if (account == null)
                 {
                     customer = new Customer
                     {
                         Name = createBookingReqDto.Name,
                         Phone = createBookingReqDto.Phone,
-                        Email = createBookingReqDto.Email
+                        Email = createBookingReqDto.Email,
+                        Address = createBookingReqDto.Address != null ? createBookingReqDto.Address : "",
                     };
                     await _customerRepository.AddCustomerAsync(customer);
                 }
@@ -72,7 +73,21 @@ namespace TourAPI.Service
                     }
                 }
 
-
+                createBookingReqDto.CustomerId = customer.Id;
+            }
+            else
+            {
+                var customer = await _customerRepository.GetCustomerByEmailAsync(createBookingReqDto.Email);
+                if (customer == null) throw new NotFoundException("Không tìm thấy khách hàng");
+                if (customer.Name != createBookingReqDto.Name || customer.Phone != createBookingReqDto.Phone || customer.Address != createBookingReqDto.Address)
+                {
+                    customer.Name = createBookingReqDto.Name;
+                    customer.Address = createBookingReqDto.Address != null ? createBookingReqDto.Address : "";
+                    await _customerRepository.UpdateCustomerAsync(customer);
+                }
+                var account = customer.Account;
+                account.PhoneNumber = createBookingReqDto.Phone;
+                await _accountRepository.UpdateAccountAsync(account);
             }
             var bookingDetails = new List<BookingDetail>();
 
@@ -84,8 +99,6 @@ namespace TourAPI.Service
                 bookingDetails.Add(bookingDetailModel);
             }
 
-
-            createBookingReqDto.CustomerId = customer.Id;
             var booking = createBookingReqDto.ToBookingFromCreateBookingReqDto(bookingDetails);
 
             await _bookingRepository.CreateAsync(booking);
@@ -139,8 +152,9 @@ namespace TourAPI.Service
             if (status == 2)
             {
                 var booking = await _bookingRepository.GetByIdAsync(bookingId);
-                if(booking == null) {
-                    throw  new NotFoundException("Không tìm thấy booking");
+                if (booking == null)
+                {
+                    throw new NotFoundException("Không tìm thấy booking");
                 }
                 await _tourScheduleRepository.IncreaseAvailableSlot(booking.TourScheduleId, booking.AdultCount + booking.ChildCount);
             }
@@ -188,7 +202,8 @@ namespace TourAPI.Service
         public async Task DeleteBookingAsync(int id)
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
-            if(booking == null) {
+            if (booking == null)
+            {
                 throw new NotFoundException("Không tìm thấy booking");
             }
             await _bookingRepository.DeleteByIdAsync(booking);

@@ -68,7 +68,9 @@ namespace TourAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_context.Promotions.Any(p => p.Code == promotionDto.Code))
+            if (await _promotionService.IsCodeExistsAsync(promotionDto.Code))
+            // if ( _promotionService.GetByCodeAsync(code)   )
+
             {
                 ModelState.AddModelError("Code", "Mã code này đã tồn tại.");
                 return BadRequest(ModelState); 
