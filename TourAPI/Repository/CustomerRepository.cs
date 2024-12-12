@@ -94,7 +94,7 @@ namespace TourAPI.Repository
             //                 .ThenInclude(t => t.TourImages)
 
         }
-
+    
         public async Task AddCustomerAsync(Customer customer)
         {
             _context.Customers.Add(customer);
