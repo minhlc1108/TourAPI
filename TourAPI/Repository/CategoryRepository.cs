@@ -18,7 +18,7 @@ namespace TourAPI.Repository
         {
             _context = context;
         }
-
+    
         public async Task<Category> CreateAsync(Category categoryModel)
         {
             await _context.AddAsync(categoryModel);
