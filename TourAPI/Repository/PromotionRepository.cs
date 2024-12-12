@@ -25,6 +25,8 @@ namespace TourAPI.Repository
             await _context.SaveChangesAsync();
             return promotionModel;
         }
+      
+
 
         public async Task<Promotion?> DeleteById(int id)
         {
@@ -117,5 +119,9 @@ namespace TourAPI.Repository
 
             return promotion;
         }
+        public async Task<bool> ExistsByCodeAsync(string code)
+    {
+        return await _context.Promotions.AnyAsync(p => p.Code == code);
+    }
     }
 }

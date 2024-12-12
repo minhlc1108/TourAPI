@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TourAPI.Dtos.Promotion;
 using TourAPI.Helpers;
+using TourAPI.Models;
 
 namespace TourAPI.Interfaces.Service
 {
@@ -15,5 +16,7 @@ namespace TourAPI.Interfaces.Service
         Task<PromotionDto?> UpdateAsync(int id, UpdatePromotionReqDto promotionDto); // Cập nhật khuyến mãi
         Task<PromotionDto?> DeleteById(int id); // Xóa khuyến mãi theo ID
         Task<PromotionDto?> GetByCodeAsync(string code); // Lấy khuyến mãi theo mã code
+        Task<bool> IsCodeExistsAsync(string code);
+
     }
 }
