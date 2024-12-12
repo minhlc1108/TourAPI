@@ -15,6 +15,7 @@ namespace TourAPI.Mappers
                 Sex = customer.Sex,
                 Address = customer.Address,
                 Birthday = customer.Birthday,
+                IdAccount =  customer.Account?.Id ?? "Unknown" ,
                 Email = customer.Account?.Email ?? "Unknown",  // Kiểm tra null trước khi truy cập
                 PhoneNumber = customer.Account?.PhoneNumber?? "Unknown",  // Kiểm tra null trước khi truy cập
                 Password = customer.Account?.PasswordHash ?? "Unknown",  // Kiểm tra null trước khi truy cập
