@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TourAPI.Helpers
 {
-    public class TourQueryObject
+    public class    TourQueryObject
     {
         public string? Id { get; set; } = null;
         public string? Name { get; set; } = null;

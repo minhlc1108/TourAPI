@@ -86,6 +86,7 @@ namespace TourAPI.Repository
             return await _context.Customers
             .Include( c=> c.Account)
             .Include(c => c.Bookings)
+                .ThenInclude(c => c.TourSchedule)
                 .FirstOrDefaultAsync(c => c.Account.Email == email);
             // .Include(c => c.BookingDetails)
             //     .Include(c => c.Bookings)
@@ -94,7 +95,7 @@ namespace TourAPI.Repository
             //                 .ThenInclude(t => t.TourImages)
 
         }
-
+    
         public async Task AddCustomerAsync(Customer customer)
         {
             _context.Customers.Add(customer);
