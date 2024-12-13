@@ -55,10 +55,10 @@ namespace TourAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] BookingQueryObject queryObject)
+        public  Task<IActionResult> GetAll([FromQuery] BookingQueryObject queryObject)
         {
             // Get booking
-            var result = await _bookingService.GetAllAsync(queryObject);
+            var result =  _bookingService.GetAll(queryObject);
             return Ok(result);
         }
 
